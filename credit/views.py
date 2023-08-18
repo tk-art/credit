@@ -1,7 +1,27 @@
 from django.shortcuts import render
+from .forms import SignupForm
+from .models import CustomUser
+from django.contrib.auth import login
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
 
 def top(request):
   return render(request, 'top.html')
 
 def signup(request):
-  return render(request, 'signup.html')
+  if request.method == 'POST':
+    form = SignupForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data.get('username')
+        email = form.cleaned_data.get('email')
+        hash_password = make_password(form.cleaned_data.get('password'))
+
+        user = CustomUser.objects.create(username=username, email=email, password=hash_password)
+        login(request, user)
+        return redirect('top')
+
+  else:
+    form = SignupForm()
+  return render(request, 'signup.html', {'form': form})
