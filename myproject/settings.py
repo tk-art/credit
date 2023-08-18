@@ -85,6 +85,9 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'credit.CustomUser'
+
+
 
 
 # Password validation
