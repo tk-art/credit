@@ -16,13 +16,9 @@ class SignupForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         email = cleaned_data.get('email')
-        print(email)
         email_confirmation = cleaned_data.get('email_conf')
-        print(email_confirmation)
         password = cleaned_data.get('password')
-        print(password)
         password_confirmation = cleaned_data.get('password_conf')
-        print(password_confirmation)
 
         if email != email_confirmation:
             raise ValidationError('メールアドレスが一致しません')
