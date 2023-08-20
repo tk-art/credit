@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .forms import SignupForm
 from .models import CustomUser
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
@@ -25,3 +25,10 @@ def signup(request):
   else:
     form = SignupForm()
   return render(request, 'signup.html', {'form': form})
+
+def login(request):
+  return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('top')

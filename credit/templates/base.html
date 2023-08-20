@@ -16,7 +16,15 @@
           <a href="/" class="header-left header-link">Credit</a>
         </div>
         <div class="col-md-6">
-          <a href="/signup" class="header-right header-link">新規登録</a>
+          {% if request.user.is_authenticated %}
+            <form method="post" action="/logout_view/">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-light">ログアウト</button>
+            </form>
+          {% else %}
+            <a href="/signup" class="header-right header-link">新規登録</a>
+            <a href="/login" class="header-right header-link">ログイン</a>
+          {% endif %}
         </div>
       </div>
     </header>　
