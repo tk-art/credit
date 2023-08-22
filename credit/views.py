@@ -37,7 +37,7 @@ def login_view(request):
             login(request, user)
             return redirect('top')
         else:
-            error_message = 'ユーザーネームかパスワードが違いますね、もう一度お試しください'
+            error_message = 'ユーザーネームかパスワードが違います、もう一度お試しください'
 
     return render(request, 'login.html', {'error_message': error_message})
 
