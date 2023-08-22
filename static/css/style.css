@@ -60,3 +60,7 @@ footer {
 label {
   margin-bottom: 5px;
 }
+
+.login-alert {
+  margin-bottom: 15px;
+}
