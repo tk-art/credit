@@ -45,3 +45,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('top')
+
+def profile(request, user_id):
+    return render(request, 'profile.html', {'user_id': user_id})
