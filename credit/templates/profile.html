@@ -4,7 +4,7 @@
 <div class="container col-md-6">
   <div class="profile-container">
     {% if profile.backimage %}
-      <img src="{{ profile.backimage }}" alt="{{ profile.username }}" class="back-profile-image-size">
+      <img src="{{ profile.backimage.url }}" alt="{{ profile.username }}" class="back-profile-image-size">
     {% else %}
       <div class="back-default-image"></div>
     {% endif %}
@@ -16,26 +16,24 @@
       {% endif %}
 
       <a class="profile-edit" data-bs-toggle="modal" data-bs-target="#exampleModal">プロフィール編集</a>
-
-
     </div>
     <div class="profile-content">
       <h3>{{ profile.username }}</h3>
       <p>{{ profile.content }}</p>
+      <div class="separator"></div>
     </div>
   </div>
 
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-
         <div class="modal-edit">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">プロフィール編集</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
           </div>
           <div class="modal-body">
-            <form method="post" enctype="multipart/form-data">
+            <form action="/profile_edit/" method="post" enctype="multipart/form-data">
               {% csrf_token %}
               <div class="form-group">
                 <label for="username">名前</label>
@@ -48,8 +46,8 @@
               </div>
               <br>
               <div class="form-group">
-                <label for="image">バック画像</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                <label for="backimage">バック画像</label>
+                <input type="file" class="form-control" id="backimage" name="backimage" accept="image/*" required>
               </div>
               <br>
               <div class="form-group">
@@ -61,13 +59,8 @@
             </form>
           </div>
         </div>
-
       </div>
     </div>
   </div>
-
-
-
-
 </div>
 {% endblock %}

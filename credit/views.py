@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import SignupForm
+from .forms import SignupForm, ProfileForm
 from .models import CustomUser, Profile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
@@ -53,8 +53,27 @@ def logout_view(request):
 
 
 def profile(request, user_id):
-    profile = get_object_or_404(Profile, user = user_id)
+    profile = get_object_or_404(Profile, user=user_id)
     return render(request, 'profile.html', {'profile': profile})
 
+@login_required
 def profile_edit(request):
-  return render(request, 'profile.html')
+    if request.method == 'POST':
+      form = ProfileForm(request.POST, request.FILES)
+      if form.is_valid():
+        profile_data = form.cleaned_data
+        profile = Profile.objects.filter(user=request.user).first()
+        if profile:
+            profile.username = profile_data['username']
+            profile.image = profile_data['image']
+            profile.backimage = profile_data['backimage']
+            profile.content = profile_data['content']
+            profile.save()
+        else:
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+        return redirect('profile', user_id=request.user.id)
+    else:
+        form = ProfileForm()
+    return render(request,'profile.html', {'form' : form})

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser
+from .models import CustomUser, Profile
 
 class SignupForm(forms.ModelForm):
     email_conf = forms.EmailField()
@@ -27,3 +27,8 @@ class SignupForm(forms.ModelForm):
             raise ValidationError('パスワードが一致しません')
 
         return cleaned_data
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['username', 'backimage', 'image', 'content']
