@@ -1,4 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}トップページ{% endblock %}
 {% block content %}
+<div class="container col-md-6">
+  {{ post.content }}
+
+  <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-edit">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">投稿</h5>
+              <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
+          </div>
+          <div class="modal-body">
+              <form action="/post/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <textarea class="form-control" id="content" name="content" rows="10" placeholder="目標を宣言しよう！" required></textarea>
+                </div>
+                <br>
+                <button type="submit" class="confirm-btn">投稿する</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

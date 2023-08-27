@@ -18,6 +18,9 @@
         <div class="col-md-6">
           <div class="d-flex justify-content-end head">
             {% if request.user.is_authenticated %}
+              {% if request.path == '/' %}
+              <a class="header-right header-link cursor" data-bs-toggle="modal" data-bs-target="#exampleModal">投稿</a>
+              {% endif %}
               <a href="/profile/{{ request.user.id }}" class="header-right header-link">プロフィール</a>
               <form method="post" action="/logout_view/">
                 {% csrf_token %}

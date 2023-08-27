@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import SignupForm, ProfileForm
-from .models import CustomUser, Profile
+from .forms import SignupForm, ProfileForm, PostForm
+from .models import CustomUser, Profile, Post
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -9,7 +9,8 @@ from django.shortcuts import get_object_or_404
 
 
 def top(request):
-  return render(request, 'top.html')
+  post = get_object_or_404(Post)
+  return render(request, 'top.html', {'post': post})
 
 def signup(request):
   if request.method == 'POST':
@@ -77,3 +78,14 @@ def profile_edit(request):
     else:
         form = ProfileForm()
     return render(request,'profile.html', {'form' : form})
+
+def post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            Post.objects.create(user=request.user, content=content)
+            return redirect('top')
+        else:
+            form = PostForm()
+    return render(request, 'post.html', {'form': form})

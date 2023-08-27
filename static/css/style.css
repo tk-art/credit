@@ -6,6 +6,10 @@ body {
   padding: 0;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 header {
   border-bottom: 1px solid rgb(121, 116, 116);
 }

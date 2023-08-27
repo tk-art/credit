@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Profile
+from .models import CustomUser, Profile, Post
 
 class SignupForm(forms.ModelForm):
     email_conf = forms.EmailField()
@@ -32,3 +32,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['username', 'backimage', 'image', 'content']
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content']
