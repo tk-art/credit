@@ -6,11 +6,39 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+import pytz
+from datetime import datetime
+
+def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
+    local_tz = pytz.timezone(timezone)
+    local_now = datetime.now(local_tz)
+    local_timestamp = timestamp.astimezone(local_tz)
+    delta = local_now - local_timestamp
+
+    seconds = int(delta.total_seconds())
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+
+    if days > 0:
+        return f"{days}日前"
+    elif hours > 0:
+        return f"{hours}時間前"
+    elif minutes > 0:
+        return f"{minutes}分前"
+    else:
+        return "たった今"
 
 
 def top(request):
-  post = get_object_or_404(Post)
-  return render(request, 'top.html', {'post': post})
+  posts = Post.objects.all()
+  for post in posts:
+    post.delta = human_readable_time_from_utc(post.timestamp)
+    print(post.delta)
+  context = {
+    'posts': posts,
+  }
+  return render(request, 'top.html', context)
 
 def signup(request):
   if request.method == 'POST':

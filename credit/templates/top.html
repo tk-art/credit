@@ -2,7 +2,17 @@
 {% block title %}トップページ{% endblock %}
 {% block content %}
 <div class="container col-md-6">
-  {{ post.content }}
+  <div class="post">
+    {% for post in posts %}
+      <div class="post-info">
+        <img src="{{ post.user.profile.image.url }}" alt="{{ profile.username }}" class="post-user-image">
+        <p class="post-username">{{ post.user.profile.username }}</p>
+        <p class="post-timestamp">{{ post.delta }}</p>
+      </div>
+      <div class="post-content">{{ post.content }}</div>
+      <div class="separator"></div>
+    {% endfor %}
+  </div>
 
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
