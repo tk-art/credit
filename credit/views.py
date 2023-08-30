@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import SignupForm, ProfileForm, PostForm
-from .models import CustomUser, Profile, Post
+from .models import CustomUser, Profile, Post, Like
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 import pytz
 from datetime import datetime
+from django.http import JsonResponse
+
 
 def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
     local_tz = pytz.timezone(timezone)
@@ -120,3 +122,33 @@ def post(request):
 
             return redirect('top')
     return render(request, 'top.html', {'form': form})
+
+def get_like_status(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    is_liked = Like.objects.filter(user=request.user, post=post).exists()
+    response_data = {
+        'is_liked': is_liked,
+        }
+    return JsonResponse(response_data)
+
+
+def like_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post, is_liked=True)
+
+    if created:
+        post.like_count += 1
+        is_liked = True
+
+    else:
+        like.delete()
+        post.like_count -= 1 if post.like_count > 0 else 0
+        is_liked = False
+
+    post.save()
+
+    response_data = {
+      'is_liked': is_liked,
+      'like_count': post.like_count
+    }
+    return JsonResponse(response_data)

@@ -11,11 +11,19 @@
         <p class="post-username">{{ post.user.profile.username }}</p>
         <p class="post-timestamp">{{ post.delta }}</p>
       </div>
-      <div class="post-period">期日：{{ post.period }}</div>
-      <div class="post-content">宣言：{{ post.content }}</div>
-      {% if post.image %}
-        <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
-      {% endif %}
+      <div class="post-data">
+        <div class="post-period">期日：{{ post.period }}</div>
+        <div class="post-content">宣言：{{ post.content }}</div>
+        {% if post.image %}
+          <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+        {% endif %}
+
+        <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+          <i class="fa-solid fa-heart" id="heart-icon"></i>
+          <span class="like-count">{{ post.like_count }}</span>
+        </button>
+
+      </div>
       <div class="separator"></div>
     {% endfor %}
   </div>
@@ -53,4 +61,9 @@
     </div>
   </div>
 </div>
+
+
+<script>
+  var csrfToken = '{{ csrf_token }}';
+</script>
 {% endblock %}

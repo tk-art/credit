@@ -162,7 +162,9 @@ label {
 
 .separator {
   border: 1px solid rgb(105, 108, 113);
-  margin: 30px auto;
+  margin-top: 10px;
+  margin-bottom: 30px;
+
 }
 
 /* 投稿 */
@@ -174,8 +176,8 @@ label {
   font-size: 18px;
 }
 
-.post-content {
-  letter-spacing: 1.4px;
+.post-data {
+  margin-left: 80px;
 }
 
 .post-user-image {
@@ -196,13 +198,13 @@ label {
 }
 
 .post-content {
-  margin-left: 80px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  letter-spacing: 1.4px;
 }
 
 .post-period {
-  margin-left: 80px;
   margin-bottom: 10px;
+  letter-spacing: 1.4px;
 }
 
 .post-image {
@@ -210,5 +212,24 @@ label {
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
-  margin-left: 80px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+/* ハートアイコン */
+#heart-icon {
+  font-size: 18px;
+  display: block;
+}
+
+.like-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  color:rgb(105, 108, 113);
+}
+
+.fas {
+  color: rgb(181, 26, 26);
 }
