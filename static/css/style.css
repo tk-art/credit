@@ -217,7 +217,7 @@ label {
 }
 
 /* ハートアイコン */
-#heart-icon {
+.heart {
   font-size: 18px;
   display: block;
 }

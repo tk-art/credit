@@ -1,25 +1,27 @@
 $(document).ready(function() {
-  var heartIcon = $("#heart-icon");
-
   $.ajax({
     type: "GET",
-    url: "/get_like_status/" + postId + "/",
+    url: "/get_like_status/",
     success: function(response) {
-      if (response.is_liked) {
-        heartIcon.addClass("fas");
-      }
+      $(".like-button").each(function() {
+        var postId = $(this).data("post-id");
+        var heartIcon = $("#heart-icon-" + postId);
+        if (response[postId]) {
+          heartIcon.addClass("fas");
+        }
+      });
     },
     error: function(xhr, status, error) {
       console.log(error);
     }
   });
-
 });
 
+
 function likeButtonClicked(buttonElement) {
-  var heartIcon = $("#heart-icon");
-  var likeCount = $(".like-count");
   var postId = $(buttonElement).data("post-id");
+  var heartIcon = $("#heart-icon-" + postId);
+  var likeCount = $("#like-count-" + postId);
 
   $.ajax({
     type: "POST",

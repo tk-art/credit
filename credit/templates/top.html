@@ -19,8 +19,8 @@
         {% endif %}
 
         <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
-          <i class="fa-solid fa-heart" id="heart-icon"></i>
-          <span class="like-count">{{ post.like_count }}</span>
+          <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+          <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
         </button>
 
       </div>

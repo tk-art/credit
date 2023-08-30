@@ -123,14 +123,14 @@ def post(request):
             return redirect('top')
     return render(request, 'top.html', {'form': form})
 
-def get_like_status(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    is_liked = Like.objects.filter(user=request.user, post=post).exists()
-    response_data = {
-        'is_liked': is_liked,
-        }
-    return JsonResponse(response_data)
+def get_like_status(request):
+    posts = Post.objects.all()
+    response_data = {}
+    for post in posts:
+        post.is_liked = Like.objects.filter(user=request.user, post=post).exists()
+        response_data[post.id] = post.is_liked
 
+    return JsonResponse(response_data)
 
 def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
