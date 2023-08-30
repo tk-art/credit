@@ -162,12 +162,20 @@ label {
 
 .separator {
   border: 1px solid rgb(105, 108, 113);
-  margin: 20px auto;
+  margin: 30px auto;
 }
 
 /* 投稿 */
 .post-info {
   display: flex;
+}
+
+.post-username {
+  font-size: 18px;
+}
+
+.post-content {
+  letter-spacing: 1.4px;
 }
 
 .post-user-image {
@@ -182,11 +190,25 @@ label {
 
 .post-timestamp {
   justify-content: space-between;
-  color: rgb(103, 99, 99);
   font-size: 12px;
   margin-left: auto;
+  color: #888686;
 }
 
 .post-content {
+  margin-left: 80px;
+  margin-bottom: 10px;
+}
+
+.post-period {
+  margin-left: 80px;
+  margin-bottom: 10px;
+}
+
+.post-image {
+  width: 200px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
   margin-left: 80px;
 }

@@ -31,10 +31,9 @@ def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
 
 
 def top(request):
-  posts = Post.objects.all()
+  posts = Post.objects.all().order_by('-timestamp')
   for post in posts:
     post.delta = human_readable_time_from_utc(post.timestamp)
-    print(post.delta)
   context = {
     'posts': posts,
   }
@@ -108,12 +107,16 @@ def profile_edit(request):
     return render(request,'profile.html', {'form' : form})
 
 def post(request):
+    form = PostForm()
+
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
+            period = form.cleaned_data['period']
             content = form.cleaned_data['content']
-            Post.objects.create(user=request.user, content=content)
+            image = form.cleaned_data.get('image', None)
+
+            Post.objects.create(user=request.user, period=period, image=image, content=content)
+
             return redirect('top')
-        else:
-            form = PostForm()
-    return render(request, 'post.html', {'form': form})
+    return render(request, 'top.html', {'form': form})

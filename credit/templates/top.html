@@ -5,11 +5,17 @@
   <div class="post">
     {% for post in posts %}
       <div class="post-info">
-        <img src="{{ post.user.profile.image.url }}" alt="{{ profile.username }}" class="post-user-image">
+        <a href="/profile/{{ post.user.id }}">
+          <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
+        </a>
         <p class="post-username">{{ post.user.profile.username }}</p>
         <p class="post-timestamp">{{ post.delta }}</p>
       </div>
-      <div class="post-content">{{ post.content }}</div>
+      <div class="post-period">期日：{{ post.period }}</div>
+      <div class="post-content">宣言：{{ post.content }}</div>
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+      {% endif %}
       <div class="separator"></div>
     {% endfor %}
   </div>
@@ -23,10 +29,20 @@
               <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
           </div>
           <div class="modal-body">
-              <form action="/post/" method="post">
+              <form action="/post/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
-                  <textarea class="form-control" id="content" name="content" rows="10" placeholder="目標を宣言しよう！" required></textarea>
+                  <label for="period">いつまでに？</label>
+                  <input type="text" class="form-control" id="period" name="period" placeholder="⚪︎月⚪︎⚪︎日までに　今日の18:00頃までに" required>
+                </div>
+                <br>
+                <div class="form-group">
+                  <label for="image">画像</label>
+                  <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
+                <br>
+                <div class="form-group">
+                  <textarea class="form-control" id="content" name="content" rows="10" placeholder="目標を宣言しよう！ 画像の有無は任意です！" required></textarea>
                 </div>
                 <br>
                 <button type="submit" class="confirm-btn">投稿する</button>
