@@ -5,6 +5,9 @@ from .models import CustomUser, Profile, Post, Like
 from .forms import SignupForm, ProfileForm
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from datetime import timedelta
+from django.utils import timezone
+
 
 class SignUpTest(TestCase):
     def test_valid_registration(self):
@@ -93,17 +96,49 @@ class ProfileEditTest(TestCase):
         self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
         self.profile = Profile.objects.create(user=self.user, username='testuser', content='test content')
+        self.backimage = SimpleUploadedFile(name='刃牙.jpg', content=open('/code/media/item_images/Baki_Kengan-Collab_Horizontal_JA.jpg', 'rb').read(), content_type='image/jpg')
+        self.image = SimpleUploadedFile(name='ハルメ.jpg', content=open('/code/media/item_images/ハルメ.jpg', 'rb').read(), content_type='image/jpg')
 
     def test_edit(self):
         response = self.client.post(reverse('profile_edit'), {
             'username': 'updateduser',
             'content': 'updated content',
+            'image': self.image,
+            'backimage': self.backimage
         })
         self.assertRedirects(response, reverse('profile', kwargs={'user_id': self.user.id}))
 
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.username, 'updateduser')
         self.assertEqual(self.profile.content, 'updated content')
+        self.assertIsNotNone(self.profile.image)
+        self.assertIsNotNone(self.profile.backimage)
+
+
+class PostTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create(username='testuser', password='12345')
+        self.image = SimpleUploadedFile(name='フリー女.jpeg', content=open('/code/media/item_images/フリー女.jpeg', 'rb').read(), content_type='image/jpeg')
+
+    def test_post(self):
+        post = Post.objects.create(user=self.user, period='period', image=None, content='content')
+        self.assertEqual(post.period, 'period')
+        self.assertEqual(post.content, 'content')
+
+    def test_image_post(self):
+        post = Post.objects.create(user=self.user, period='period', image=self.image, content='content')
+        self.assertIsNotNone(post.image)
+
+    def test_post_descending_order(self):
+        now = timezone.now()
+
+        post1 = Post.objects.create(user=self.user, period='period2', image=None, content='content2', timestamp= now - timedelta(days=2))
+        post2 = Post.objects.create(user=self.user, period='period1', image=None, content='content1', timestamp= now - timedelta(days=1))
+
+        latest_posts = Post.objects.all().order_by('-timestamp')
+
+        self.assertEqual(list(latest_posts), [post2, post1])
+
 
 class LikeTest(TestCase):
     def setUp(self):
