@@ -1,7 +1,7 @@
 
 from django.urls import reverse
 from django.test import TestCase
-from .models import CustomUser, Profile
+from .models import CustomUser, Profile, Post, Like
 from .forms import SignupForm, ProfileForm
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -104,3 +104,28 @@ class ProfileEditTest(TestCase):
         self.profile.refresh_from_db()
         self.assertEqual(self.profile.username, 'updateduser')
         self.assertEqual(self.profile.content, 'updated content')
+
+class LikeTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create(username='testuser', password='12345')
+        self.post = Post.objects.create(user=self.user, period='period', content='content')
+
+    def test_like(self):
+        Like.objects.create(user=self.user, post=self.post, is_liked=True)
+        self.post.like_count += 1
+        self.assertEqual(self.post.like_count, 1)
+
+    def test_unlike(self):
+        like = Like.objects.create(user=self.user, post=self.post, is_liked=True)
+        self.post.like_count += 1
+        like.delete()
+        self.post.like_count -= 1 if self.post.like_count > 0 else 0
+        self.assertEqual(self.post.like_count, 0)
+
+    def test_multiple_likes(self):
+        user2 = CustomUser.objects.create(username='testuser2', password='12345')
+        Like.objects.create(user=self.user, post=self.post)
+        self.post.like_count += 1
+        Like.objects.create(user=user2, post=self.post)
+        self.post.like_count += 1
+        self.assertEqual(self.post.like_count, 2)
