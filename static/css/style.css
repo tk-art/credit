@@ -135,9 +135,20 @@ label {
   cursor: pointer;
 }
 
-.profile-content {
+.profile-top {
   margin-top: 15px;
 }
+
+.profile-username {
+  font-size: 24px;
+  letter-spacing: 1.2px;
+}
+
+.profile-content {
+  font-size: 14px;
+}
+
+
 
 /* モーダル */
 
@@ -162,9 +173,13 @@ label {
 
 .separator {
   border: 1px solid rgb(105, 108, 113);
-  margin-top: 10px;
   margin-bottom: 30px;
+  margin-top: 10px;
+}
 
+.profile-sepa {
+  border: 1px solid rgb(105, 108, 113);
+  margin-bottom: 30px;
 }
 
 /* 投稿 */
@@ -232,4 +247,45 @@ label {
 
 .fas {
   color: rgb(181, 26, 26);
+}
+
+/* プロフィールタブ */
+.nav {
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: none !important;
+}
+
+.nav-item .nav-link {
+  color: #837d7d;
+}
+
+.nav-item .nav-link:hover {
+  color: #837d7d;
+  background-color: #ebe1e1;
+}
+
+/* フォロー */
+.profile-follows {
+  display: flex;
+}
+
+.profile-username {
+  align-items: center;
+  font-size: 18px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.profile-separator {
+  border: 1px solid rgb(105, 108, 113);
+  margin: 10px;
+}
+
+.follow-btn {
+  background-color: #fff;
+  color: black;
+  border: none;
 }

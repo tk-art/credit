@@ -2,31 +2,76 @@
 {% block title %}トップページ{% endblock %}
 {% block content %}
 <div class="container col-md-6">
-  <div class="post">
-    {% for post in posts %}
-      <div class="post-info">
-        <a href="/profile/{{ post.user.id }}">
-          <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
-        </a>
-        <p class="post-username">{{ post.user.profile.username }}</p>
-        <p class="post-timestamp">{{ post.delta }}</p>
-      </div>
-      <div class="post-data">
-        <div class="post-period">期日：{{ post.period }}</div>
-        <div class="post-content">宣言：{{ post.content }}</div>
-        {% if post.image %}
-          <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
-        {% endif %}
+  <ul class="nav nav-tabs" id="myTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">オール</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">フォロー中</a>
+    </li>
+  </ul>
 
-        <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
-          <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
-          <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
-        </button>
+  <div class="separator"></div>
 
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+      <div class="post">
+        {% for post in posts %}
+          <div class="post-info">
+            <a href="/profile/{{ post.user.id }}">
+              <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
+            </a>
+            <p class="post-username">{{ post.user.profile.username }}</p>
+            <p class="post-timestamp">{{ post.delta }}</p>
+          </div>
+          <div class="post-data">
+            <div class="post-period">期日：{{ post.period }}</div>
+            <div class="post-content">宣言：{{ post.content }}</div>
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+            {% endif %}
+
+            <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+              <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+              <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+            </button>
+
+          </div>
+          <div class="separator"></div>
+        {% endfor %}
       </div>
-      <div class="separator"></div>
-    {% endfor %}
+    </div>
+
+
+    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+      <div class="post">
+        {% for post in follows_posts %}
+          <div class="post-info">
+            <a href="/profile/{{ post.user.id }}">
+              <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
+            </a>
+            <p class="post-username">{{ post.user.profile.username }}</p>
+            <p class="post-timestamp">{{ post.delta }}</p>
+          </div>
+          <div class="post-data">
+            <div class="post-period">期日：{{ post.period }}</div>
+            <div class="post-content">宣言：{{ post.content }}</div>
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+            {% endif %}
+
+            <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+              <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+              <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+            </button>
+
+          </div>
+          <div class="separator"></div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
+
 
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">

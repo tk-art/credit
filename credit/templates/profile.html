@@ -15,13 +15,104 @@
         <div class="default-image"></div>
       {% endif %}
 
-      <a class="profile-edit" data-bs-toggle="modal" data-bs-target="#exampleModal">プロフィール編集</a>
+      {% if request.user == profile.user %}
+        <a class="profile-edit" data-bs-toggle="modal" data-bs-target="#exampleModal">プロフィール編集</a>
+      {% endif %}
+
+      {% if request.user != profile.user %}
+        <a class="profile-edit" id="follow-button" data-following="{{ is_following }}" onclick="followButtonClicked()">フォロー</a>
+      {% endif %}
     </div>
-    <div class="profile-content">
-      <h3>{{ profile.username }}</h3>
-      <p>{{ profile.content }}</p>
-      <div class="separator"></div>
+    <div class="profile-top">
+      <p class="profile-username">{{ profile.username }}</p>
+      <p class="profile-content">{{ profile.content }}</p>
+      <ul class="nav nav-tabs" id="myTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">
+            投稿
+            {% if posts %}
+              ({{ posts.count }})
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">証拠</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">
+            フォロー
+            {% if profile.follows.count > 0 %}
+              ({{ profile.follows.count }})
+            {% endif %}
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="tab4-tab" data-bs-toggle="tab" href="#tab4" role="tab" aria-controls="tab4" aria-selected="false">
+            フォロワー
+            {% if profile.followed_by.count > 0 %}
+              ({{ profile.followed_by.count }})
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+      <div class="profile-sepa"></div>
     </div>
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <div class="post">
+          {% for post in posts %}
+            <div class="post-info">
+              <a href="/profile/{{ post.user.id }}">
+                <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ post.user.profile.username }}</p>
+              <p class="post-timestamp">{{ post.delta }}</p>
+            </div>
+            <div class="post-data">
+              <div class="post-period">期日：{{ post.period }}</div>
+              <div class="post-content">宣言：{{ post.content }}</div>
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+              {% endif %}
+              <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+                <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+                <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+              </button>
+            </div>
+            <div class="separator"></div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <!-- Tab 2の内容 -->
+      </div>
+
+      <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        {% for profile in follows_profiles %}
+          <div class="profile-follows">
+            <a href="/profile/{{ profile.user.id }}">
+              <img src="{{ profile.image.url }}" alt="{{ profile.username }}" class="post-user-image">
+            </a>
+            <p class="profile-username">{{ profile.username }}</p>
+          </div>
+          <div class="profile-separator"></div>
+          {% endfor %}
+      </div>
+      <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+        {% for profile in followed_profiles %}
+          <div class="profile-follows">
+            <a href="/profile/{{ profile.user.id }}">
+              <img src="{{ profile.image.url }}" alt="{{ profile.username }}" class="post-user-image">
+            </a>
+            <p class="profile-username">{{ profile.username }}</p>
+          </div>
+          <div class="profile-separator"></div>
+          {% endfor %}
+      </div>
+
+    </div>
+  </div>
   </div>
 
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -63,4 +154,9 @@
     </div>
   </div>
 </div>
+
+<script>
+  var userId = '{{ profile.user.id }}';
+  var csrfToken = '{{ csrf_token }}';
+</script>
 {% endblock %}

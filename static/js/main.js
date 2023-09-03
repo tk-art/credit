@@ -46,3 +46,24 @@ function likeButtonClicked(buttonElement) {
       }
   });
 }
+
+function followButtonClicked() {
+  var isFollowing = $(this).attr("data-following");
+
+  $.ajax({
+    type: "POST",
+    url: "/follow/" + userId + "/",
+    data: {
+      user_id: userId,
+      csrfmiddlewaretoken: csrfToken,
+    },
+    success: function(response) {
+      if (response.success) {
+        isFollowing = !isFollowing;
+        $("#follow-button").text(isFollowing ? "フォロー中" : "フォローする");
+        $("#follow-button").addClass("follow-btn");
+        $("#follow-button").attr("data-following", isFollowing);
+      }
+    }
+  });
+}

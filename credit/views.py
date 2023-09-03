@@ -34,10 +34,13 @@ def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
 
 def top(request):
   posts = Post.objects.all().order_by('-timestamp')
+  follows_profiles = request.user.profile.follows.all()
+  follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
   for post in posts:
     post.delta = human_readable_time_from_utc(post.timestamp)
   context = {
     'posts': posts,
+    'follows_posts': follows_posts,
   }
   return render(request, 'top.html', context)
 
@@ -84,7 +87,20 @@ def logout_view(request):
 
 def profile(request, user_id):
     profile = get_object_or_404(Profile, user=user_id)
-    return render(request, 'profile.html', {'profile': profile})
+    posts = Post.objects.filter(user_id=user_id).order_by('-timestamp')
+    follows_profiles = profile.follows.all()
+    followed_profiles = profile.followed_by.all()
+    is_following = request.user.profile.follows.filter(id=profile.id).exists()
+
+    for post in posts:
+      post.delta = human_readable_time_from_utc(post.timestamp)
+    context = {
+      'posts': posts,
+      'profile': profile,
+      'follows_profiles': follows_profiles,
+      'followed_profiles': followed_profiles,
+    }
+    return render(request, 'profile.html', context)
 
 @login_required
 def profile_edit(request):
@@ -151,4 +167,18 @@ def like_post(request, post_id):
       'is_liked': is_liked,
       'like_count': post.like_count
     }
+    return JsonResponse(response_data)
+
+def follow(request, user_id):
+    response_data = {}
+    try:
+        user_to_toggle = CustomUser.objects.get(id=user_id)
+        if request.user.profile.follows.filter(id=user_id).exists():
+            request.user.profile.follows.remove(user_to_toggle.profile)
+        else:
+            request.user.profile.follows.add(user_to_toggle.profile)
+        response_data['success'] = True
+    except User.DoesNotExist:
+        pass
+
     return JsonResponse(response_data)

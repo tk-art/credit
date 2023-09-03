@@ -10,6 +10,7 @@ class Profile(models.Model):
     backimage = models.ImageField(upload_to='item_images/', null=True, blank=True)
     image = models.ImageField(upload_to='item_images/', null=True, blank=True)
     content = models.TextField()
+    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
 
 class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
