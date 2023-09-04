@@ -34,6 +34,7 @@ def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
 
 def top(request):
   posts = Post.objects.all().order_by('-timestamp')
+  print(request.user)
   follows_profiles = request.user.profile.follows.all()
   follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
   for post in posts:
@@ -170,15 +171,25 @@ def like_post(request, post_id):
     return JsonResponse(response_data)
 
 def follow(request, user_id):
-    response_data = {}
     try:
         user_to_toggle = CustomUser.objects.get(id=user_id)
-        if request.user.profile.follows.filter(id=user_id).exists():
+        is_following = False
+        if request.user.profile.follows.filter(id=user_to_toggle.profile.id).exists():
             request.user.profile.follows.remove(user_to_toggle.profile)
         else:
             request.user.profile.follows.add(user_to_toggle.profile)
-        response_data['success'] = True
+            is_following = True
+        response_data = {
+            'success': True,
+            'is_following': is_following
+        }
     except User.DoesNotExist:
         pass
 
     return JsonResponse(response_data)
+
+def get_follow_status(request, user_id):
+    user_to_toggle = CustomUser.objects.get(id=user_id)
+    print(user_to_toggle)
+    follow_status = request.user.profile.follows.filter(id=user_to_toggle.profile.id).exists()
+    return JsonResponse({'success': follow_status})

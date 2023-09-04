@@ -171,6 +171,8 @@ label {
   border: 1px solid rgb(62, 105, 213);
 }
 
+/* SEPARATOR */
+
 .separator {
   border: 1px solid rgb(105, 108, 113);
   margin-bottom: 30px;
@@ -180,6 +182,12 @@ label {
 .profile-sepa {
   border: 1px solid rgb(105, 108, 113);
   margin-bottom: 30px;
+}
+
+.profile-separator {
+  border: 1px solid rgb(105, 108, 113);
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 /* 投稿 */
@@ -279,13 +287,28 @@ label {
   margin-bottom: auto;
 }
 
-.profile-separator {
-  border: 1px solid rgb(105, 108, 113);
-  margin: 10px;
+.follow {
+  font-size: 14px;
+  border: 2px solid rgb(154, 154, 162);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  background: black;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+.follow:hover {
+  cursor: pointer;
+  color: #fff;
+  transform: translateX(-5px);
+  transition: transform 0.3s ease;
 }
 
 .follow-btn {
-  background-color: #fff;
-  color: black;
-  border: none;
+  background-color: rgb(62, 105, 213);
+  color: #fff;
+  border: 2px solid rgb(62, 105, 213);
 }

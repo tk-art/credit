@@ -48,8 +48,6 @@ function likeButtonClicked(buttonElement) {
 }
 
 function followButtonClicked() {
-  var isFollowing = $(this).attr("data-following");
-
   $.ajax({
     type: "POST",
     url: "/follow/" + userId + "/",
@@ -59,11 +57,36 @@ function followButtonClicked() {
     },
     success: function(response) {
       if (response.success) {
-        isFollowing = !isFollowing;
-        $("#follow-button").text(isFollowing ? "フォロー中" : "フォローする");
-        $("#follow-button").addClass("follow-btn");
+        isFollowing = response.is_following;
+        console.log("isFollowing value is: ", isFollowing);  // デバッグ用
+
+        if (isFollowing === true) {
+          $("#follow-button").addClass("follow-btn");
+        } else {
+          $("#follow-button").removeClass("follow-btn");
+        }
+        $("#follow-button").text(isFollowing ? "フォロー中" : "フォロー");
         $("#follow-button").attr("data-following", isFollowing);
       }
     }
   });
 }
+
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    url: "/get_follow_status/" + userId + "/",
+    data: {
+      user_id: userId,
+    },
+    success: function(response) {
+      if (response.success) {
+        $("#follow-button").addClass("follow-btn");
+        $("#follow-button").text("フォロー中");
+      }
+    },
+    error: function(xhr, status, error) {
+      console.log(error);
+    }
+  });
+});

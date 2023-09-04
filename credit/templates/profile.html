@@ -20,7 +20,7 @@
       {% endif %}
 
       {% if request.user != profile.user %}
-        <a class="profile-edit" id="follow-button" data-following="{{ is_following }}" onclick="followButtonClicked()">フォロー</a>
+        <a class="follow" id="follow-button" data-following="{{ is_following }}" onclick="followButtonClicked()">フォロー</a>
       {% endif %}
     </div>
     <div class="profile-top">

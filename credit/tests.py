@@ -164,3 +164,18 @@ class LikeTest(TestCase):
         Like.objects.create(user=user2, post=self.post)
         self.post.like_count += 1
         self.assertEqual(self.post.like_count, 2)
+
+class FollowTests(TestCase):
+    def setUp(self):
+        self.user1 = CustomUser.objects.create(username='user1', password='password1')
+        self.client.login(username='user1', password='password1')
+        self.user2 = CustomUser.objects.create(username='user2', password='password2')
+
+    def test_follow_user(self):
+        self.user1.profile.follows.add(self.user2.profile)
+        self.assertTrue(self.user1.profile.follows.filter(id=self.user2.profile.id).exists())
+
+    def test_unfollow_user(self):
+        self.user1.profile.follows.add(self.user2.profile)
+        self.user1.profile.follows.remove(self.user2.profile)
+        self.assertFalse(self.user1.profile.follows.filter(id=self.user2.profile.id).exists())
