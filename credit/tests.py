@@ -65,9 +65,10 @@ class LoginTest(TestCase):
         self.user = CustomUser.objects.create_user(
             username='testuser', email='test@example.com', password='testpassword')
 
+        self.profile = Profile.objects.create(user=self.user, username='user1', content='content')
+
     def test_login_success(self):
         logged_in = self.client.login(username='testuser', password='testpassword')
-        print(logged_in)
         self.assertTrue(logged_in)
 
         response = self.client.get(reverse('top'))
@@ -168,8 +169,10 @@ class LikeTest(TestCase):
 class FollowTests(TestCase):
     def setUp(self):
         self.user1 = CustomUser.objects.create(username='user1', password='password1')
-        self.client.login(username='user1', password='password1')
         self.user2 = CustomUser.objects.create(username='user2', password='password2')
+
+        self.profile1 = Profile.objects.create(user=self.user1, username='user1', content='content')
+        self.profile2 = Profile.objects.create(user=self.user2, username='user2', content='content')
 
     def test_follow_user(self):
         self.user1.profile.follows.add(self.user2.profile)

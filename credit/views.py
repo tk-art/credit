@@ -34,9 +34,10 @@ def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
 
 def top(request):
   posts = Post.objects.all().order_by('-timestamp')
-  print(request.user)
-  follows_profiles = request.user.profile.follows.all()
-  follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
+  follows_posts = None
+  if request.user.is_authenticated:
+    follows_profiles = request.user.profile.follows.all()
+    follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
   for post in posts:
     post.delta = human_readable_time_from_utc(post.timestamp)
   context = {
