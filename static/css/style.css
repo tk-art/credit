@@ -312,3 +312,25 @@ label {
   color: #fff;
   border: 2px solid rgb(62, 105, 213);
 }
+
+/* 写真用モーダル */
+.modal {
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-image {
+  max-width: 80%;
+  max-height: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}

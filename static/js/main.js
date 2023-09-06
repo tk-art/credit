@@ -90,3 +90,16 @@ $(document).ready(function() {
     }
   });
 });
+
+
+$('.post-image').click(function() {
+  const modal = $('#modal');
+  const modalImage = $('#modal-image');
+
+  modalImage.attr('src', $(this).attr('src'));
+  modal.show();
+});
+
+$('#close-modal').click(function() {
+  $('#modal').hide();
+});

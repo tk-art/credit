@@ -30,7 +30,7 @@
             <div class="post-period">期日：{{ post.period }}</div>
             <div class="post-content">宣言：{{ post.content }}</div>
             {% if post.image %}
-              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image" id="image-id">
             {% endif %}
 
             <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
@@ -107,6 +107,10 @@
         </div>
       </div>
     </div>
+  </div>
+  <div id="modal" class="modal">
+    <img id="modal-image" src="" alt="Full Image" class="modal-image">
+    <span id="close-modal" class="close-modal">Close</span>
   </div>
 </div>
 
