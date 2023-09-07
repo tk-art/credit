@@ -25,3 +25,12 @@ class Like(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     is_liked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Evidence(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    text = models.TextField(max_length=300)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class EvidenceImage(models.Model):
+    evidence = models.ForeignKey(Evidence, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='item_images/')

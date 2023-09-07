@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Profile, Post
+from .models import CustomUser, Profile, Post, Evidence
 
 class SignupForm(forms.ModelForm):
     email_conf = forms.EmailField()
@@ -37,3 +37,16 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['period', 'image', 'content']
+
+class EvidenceForm(forms.ModelForm):
+    class Meta:
+        model = Evidence
+        fields = ['text']
+
+    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    def clean_images(self):
+        images = self.files.getlist('images')
+        if len(images) > 4:
+            raise ValidationError('画像の上限は4枚です')
+        return images

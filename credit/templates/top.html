@@ -14,7 +14,7 @@
   </ul>
 
   <div class="profile-sepa"></div>
-
+  <!--オール-->
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
       <div class="post">
@@ -44,6 +44,7 @@
       </div>
     </div>
 
+     <!--フォロー中-->
 　　{% if request.user.is_authenticated %}
     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
       <div class="post">
@@ -75,39 +76,72 @@
     {% endif %}
   </div>
 
-
+　<!--宣言モーダル-->
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-edit">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">投稿</h5>
-              <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
-          </div>
-          <div class="modal-body">
-              <form action="/post/" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label for="period">いつまでに？</label>
-                  <input type="text" class="form-control" id="period" name="period" placeholder="⚪︎月⚪︎⚪︎日までに　今日の18:00頃までに" required>
-                </div>
-                <br>
-                <div class="form-group">
-                  <label for="image">画像</label>
-                  <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                </div>
-                <br>
-                <div class="form-group">
-                  <textarea class="form-control" id="content" name="content" rows="10" placeholder="目標を宣言しよう！ 画像の有無は任意です！" required></textarea>
-                </div>
-                <br>
-                <button type="submit" class="confirm-btn">投稿する</button>
-            </form>
-          </div>
+    <div class="modal-dialog modal-top">
+      <div class="modal-content">
+        <div class="modal-edit">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">宣言</h5>
+            <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
+        </div>
+        <div class="modal-body">
+          <form action="/post/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="period">いつまでに？</label>
+              <input type="text" class="form-control" id="period" name="period" placeholder="⚪︎月⚪︎⚪︎日までに　今日の18:00頃までに" required>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="image">画像</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <br>
+            <div class="form-group">
+              <textarea class="form-control" id="content" name="content" rows="6" placeholder="目標を宣言しよう！ 画像の有無は任意です！" required></textarea>
+            </div>
+            <br>
+            <button type="submit" class="confirm-btn">宣言する</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
+  </div>
+
+  <!--証拠モーダル-->
+  <div class="modal fade modal-back" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-top">
+      <div class="modal-content">
+        <div class="modal-edit">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">証拠</h5>
+            <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
+        </div>
+        <div class="modal-body">
+          <form action="/post/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <textarea class="form-control" id="content" name="content" rows="6" placeholder="証拠を提出しよう！ 画像の有無は任意です！" required></textarea>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="image">画像：上限は４枚です</label>
+              <input type="file" class="form-control" id="post-image" name="image[]" accept="image/*" multiple>
+            </div>
+            <br>
+            <div id="preview" class="preview"></div>
+            <br>
+            <button type="submit" class="confirm-btn">提出する</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!--画像用モーダル-->
   <div id="modal" class="modal">
     <img id="modal-image" src="" alt="Full Image" class="modal-image">
     <span id="close-modal" class="close-modal">Close</span>

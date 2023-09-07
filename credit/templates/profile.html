@@ -73,7 +73,6 @@
               <div class="post-period">期日：{{ post.period }}</div>
               <div class="post-content">宣言：{{ post.content }}</div>
               {% if post.image %}
-
                 <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
               {% endif %}
               <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
@@ -117,7 +116,7 @@
   </div>
 
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-top">
       <div class="modal-content">
         <div class="modal-edit">
           <div class="modal-header">

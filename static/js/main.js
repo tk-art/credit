@@ -103,3 +103,24 @@ $('.post-image').click(function() {
 $('#close-modal').click(function() {
   $('#modal').hide();
 });
+
+/* 証拠画像プレビュー */
+$(document).ready(function() {
+  $('#post-image').on('change', function() {
+
+    const files = this.files;
+    $.each(files, function(i, file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = $('<img>').attr({
+          src: e.target.result,
+          width: 200,
+          height: 200,
+          class: 'preview'
+        });
+        $('#preview').append(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+});

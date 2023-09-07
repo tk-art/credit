@@ -19,7 +19,8 @@
           <div class="d-flex justify-content-end head">
             {% if request.user.is_authenticated %}
               {% if request.path == '/' %}
-                <a class="header-right header-link cursor" data-bs-toggle="modal" data-bs-target="#exampleModal">投稿</a>
+                <a class="header-right header-link cursor" data-bs-toggle="modal" data-bs-target="#exampleModal">宣言</a>
+                <a class="header-right header-link cursor" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠</a>
               {% endif %}
               <a href="/notification" class="header-right header-link">通知</a>
               <a href="/search" class="header-right header-link">検索</a>

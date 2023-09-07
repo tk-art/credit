@@ -151,11 +151,6 @@ label {
 
 
 /* モーダル */
-
-.modal-edit {
-  background-color: rgb(47, 37, 37);
-}
-
 .confirm-btn {
   font-size: 12px;
   border: 1px solid rgb(146, 147, 152);
@@ -169,6 +164,18 @@ label {
   color: #fff;
   background: rgb(62, 105, 213);
   border: 1px solid rgb(62, 105, 213);
+}
+
+.modal-top {
+  margin-top: 20px;
+}
+
+.modal {
+  color: black;
+}
+
+.close-modal {
+  color: #fff;
 }
 
 /* SEPARATOR */
@@ -333,4 +340,11 @@ label {
   top: 20px;
   right: 20px;
   cursor: pointer;
+}
+
+.preview {
+  border-radius: 5px;
+  object-fit: cover;
+  margin-right: 15px;
+  margin-bottom: 15px;
 }

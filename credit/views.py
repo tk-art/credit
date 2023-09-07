@@ -191,6 +191,21 @@ def follow(request, user_id):
 
 def get_follow_status(request, user_id):
     user_to_toggle = CustomUser.objects.get(id=user_id)
-    print(user_to_toggle)
     follow_status = request.user.profile.follows.filter(id=user_to_toggle.profile.id).exists()
     return JsonResponse({'success': follow_status})
+
+def evidence(request):
+    if request.method == 'POST':
+        form = EvidenceForm(request.POST, request.FILES)
+        if form.is_valid():
+            evidence = form.save(commit=False)
+            evidence.user = request.user
+            evidence.save()
+            if request.FILES.getlist('image[]'):
+              images = request.FILES.getlist('image[]')
+              for image in images:
+                  EvidenceImage.objects.create(evidence=evidence, image=image)
+            return redirect('profile')
+    else:
+        form = PostForm()
+    return render(request, 'top.html', {'form': form})
