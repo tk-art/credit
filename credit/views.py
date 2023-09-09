@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import SignupForm, ProfileForm, PostForm
-from .models import CustomUser, Profile, Post, Like
+from .forms import SignupForm, ProfileForm, PostForm, EvidenceForm, EvidenceImageForm
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -196,16 +196,23 @@ def get_follow_status(request, user_id):
 
 def evidence(request):
     if request.method == 'POST':
-        form = EvidenceForm(request.POST, request.FILES)
-        if form.is_valid():
+        print(request.POST)
+        images = request.FILES.getlist('image[]')
+        print(images)
+        form = EvidenceForm(request.POST)
+        form_image = EvidenceImageForm(request.POST, request.FILES)
+        print(form.errors.as_data())
+        print(form_image.errors.as_data())
+        if form.is_valid() and form_image.is_valid():
             evidence = form.save(commit=False)
             evidence.user = request.user
             evidence.save()
-            if request.FILES.getlist('image[]'):
-              images = request.FILES.getlist('image[]')
+            images = request.FILES.getlist('image[]')
+            if images:
               for image in images:
                   EvidenceImage.objects.create(evidence=evidence, image=image)
             return redirect('profile')
     else:
-        form = PostForm()
-    return render(request, 'top.html', {'form': form})
+        form = EvidenceForm()
+        form_image = EvidenceImageForm()
+    return render(request, 'top.html', {'form': form, 'form_image': form_image})

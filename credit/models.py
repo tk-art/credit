@@ -28,6 +28,7 @@ class Like(models.Model):
 
 class Evidence(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.OneToOneField(Post, on_delete=models.CASCADE)
     text = models.TextField(max_length=300)
     timestamp = models.DateTimeField(auto_now_add=True)
 

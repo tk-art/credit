@@ -120,10 +120,10 @@
             <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
         </div>
         <div class="modal-body">
-          <form action="/post/" method="post" enctype="multipart/form-data">
+          <form action="/evidence/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
-              <textarea class="form-control" id="content" name="content" rows="6" placeholder="証拠を提出しよう！ 画像の有無は任意です！" required></textarea>
+              <textarea class="form-control" id="content" name="text" rows="6" placeholder="証拠を提出しよう！ 画像の有無は任意です！" required></textarea>
             </div>
             <br>
             <div class="form-group">
