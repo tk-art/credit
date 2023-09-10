@@ -92,7 +92,7 @@ $(document).ready(function() {
 });
 
 
-$('.post-image').click(function() {
+$('.post-image, .evidence-image').click(function() {
   const modal = $('#modal');
   const modalImage = $('#modal-image');
 
@@ -106,7 +106,7 @@ $('#close-modal').click(function() {
 
 /* 証拠画像プレビュー */
 $(document).ready(function() {
-  $('#post-image').on('change', function() {
+  $('.image-post').on('change', function() {
 
     const files = this.files;
     $.each(files, function(i, file) {
@@ -123,4 +123,10 @@ $(document).ready(function() {
       reader.readAsDataURL(file);
     });
   });
+});
+
+$('.evidence-btn').click(function() {
+  var postId = $(this).data('post-id');
+
+  $('#hiddenPostId').val(postId);
 });

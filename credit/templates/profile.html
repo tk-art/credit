@@ -36,7 +36,12 @@
           </a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">証拠</a>
+          <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">
+            証拠
+            {% if evidences %}
+              ({{ evidences.count }})
+            {% endif %}
+          </a>
         </li>
         <li class="nav-item" role="presentation">
           <a class="nav-link" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">
@@ -79,13 +84,32 @@
                 <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
                 <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
               </button>
+              <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
             </div>
             <div class="separator"></div>
           {% endfor %}
         </div>
       </div>
+
       <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-        <!-- Tab 2の内容 -->
+        <div class="post">
+          {% for evidence in evidences %}
+            <div class="post-info">
+              <a href="/profile/{{ evidence.user.id }}">
+                <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ evidence.user.profile.username }}</p>
+              <p class="post-timestamp">{{ evidence.delta }}</p>
+            </div>
+            <div class="post-data">
+              <div class="evidence-text">{{ evidence.text }}</div>
+              {% for evidence_image in evidence.images.all %}
+                <img src="{{ evidence_image.image.url }}" alt="{{ evidence.user.profile.username }}" class="evidence-image">
+              {% endfor %}
+            </div>
+            <div class="separator"></div>
+          {% endfor %}
+        </div>
       </div>
 
       <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
@@ -115,6 +139,7 @@
   </div>
   </div>
 
+  <!--プロフィール編集モーダル-->
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-top">
       <div class="modal-content">
@@ -153,6 +178,43 @@
       </div>
     </div>
   </div>
+
+  <!--証拠モーダル-->
+  <div class="modal fade modal-back" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-top">
+      <div class="modal-content">
+        <div class="modal-edit">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">証拠</h5>
+            <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
+        </div>
+        <div class="modal-body">
+          <form action="/evidence/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="hiddenPostId" name="post_id" value="">
+            <div class="form-group">
+              <textarea class="form-control" id="content" name="text" rows="6" placeholder="証拠を提出しよう！ 画像の有無は任意です！" required></textarea>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="image">画像：上限は４枚です</label>
+              <input type="file" class="form-control image-post" id="post-image" name="image" accept="image/*">
+              <input type="file" class="form-control image-post" id="post-image" name="image" accept="image/*">
+              <input type="file" class="form-control image-post" id="post-image" name="image" accept="image/*">
+              <input type="file" class="form-control image-post" id="post-image" name="image" accept="image/*">
+            </div>
+            <br>
+            <div id="preview" class="preview"></div>
+            <br>
+            <button type="submit" class="confirm-btn">提出する</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!--画像用モーダル-->
   <div id="modal" class="modal">
     <img id="modal-image" src="" alt="Full Image" class="modal-image">
     <span id="close-modal" class="close-modal">Close</span>

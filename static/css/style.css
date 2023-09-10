@@ -348,3 +348,43 @@ label {
   margin-right: 15px;
   margin-bottom: 15px;
 }
+
+/* 証拠ボタン */
+.evidence-btn {
+  font-size: 12px;
+  border: 1px solid rgb(154, 154, 162);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  background: black;
+  float: right;
+  margin-bottom: 10px;
+  letter-spacing: 1.2px;
+}
+
+.evidence-btn:hover {
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.image-post {
+  margin-bottom: 12px;
+}
+
+/* 証拠表示 */
+.evidence-text {
+  margin-bottom: 12px;
+}
+
+.evidence-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: inline;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}

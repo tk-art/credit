@@ -93,6 +93,9 @@ def profile(request, user_id):
     follows_profiles = profile.follows.all()
     followed_profiles = profile.followed_by.all()
     is_following = request.user.profile.follows.filter(id=profile.id).exists()
+    evidences = Evidence.objects.filter(user=user_id).order_by('-timestamp')
+    for evidence in evidences:
+        evidence.delta = human_readable_time_from_utc(evidence.timestamp)
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
@@ -101,6 +104,7 @@ def profile(request, user_id):
       'profile': profile,
       'follows_profiles': follows_profiles,
       'followed_profiles': followed_profiles,
+      'evidences': evidences,
     }
     return render(request, 'profile.html', context)
 
@@ -196,22 +200,21 @@ def get_follow_status(request, user_id):
 
 def evidence(request):
     if request.method == 'POST':
-        print(request.POST)
-        images = request.FILES.getlist('image[]')
-        print(images)
         form = EvidenceForm(request.POST)
         form_image = EvidenceImageForm(request.POST, request.FILES)
-        print(form.errors.as_data())
-        print(form_image.errors.as_data())
+
         if form.is_valid() and form_image.is_valid():
+            post_id = request.POST.get('post_id')
+            post = Post.objects.get(id=post_id)
             evidence = form.save(commit=False)
             evidence.user = request.user
+            evidence.post = post
             evidence.save()
-            images = request.FILES.getlist('image[]')
+            images = request.FILES.getlist('image')
             if images:
               for image in images:
                   EvidenceImage.objects.create(evidence=evidence, image=image)
-            return redirect('profile')
+            return redirect('profile', user_id=request.user.id)
     else:
         form = EvidenceForm()
         form_image = EvidenceImageForm()
