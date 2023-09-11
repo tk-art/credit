@@ -63,6 +63,7 @@
       <div class="profile-sepa"></div>
     </div>
 
+    <!--宣言-->
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
         <div class="post">
@@ -84,13 +85,46 @@
                 <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
                 <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
               </button>
-              <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
-            </div>
+              {% if not post.evidence %}
+                <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
+              {% endif %}
+              </div>
             <div class="separator"></div>
           {% endfor %}
         </div>
       </div>
 
+      <!--投稿に関連する証拠モーダル-->
+      <div class="modal fade" id="connection-declaration" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">関連する宣言</h5>
+            </div>
+            <div class="modal-body">
+              <div class="post">
+                <div class="post-info">
+                  <a href="/profile/{{ evidence.post.user.id }}">
+                    <img src="{{ evidence.post.user.profile.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-user-image">
+                  </a>
+                  <p class="post-username">{{ evidence.post.user.profile.username }}</p>
+                  <p class="post-timestamp">{{ evidence.post.delta }}</p>
+                </div>
+                <div class="post-data">
+                  <div class="post-period">期日：{{ evidence.post.period }}</div>
+                  <div class="post-content">宣言：{{ evidence.post.content }}</div>
+                  {% if evidence.post.image %}
+                    <img src="{{ evidence.post.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-image">
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!--証拠-->
       <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
         <div class="post">
           {% for evidence in evidences %}
@@ -101,6 +135,8 @@
               <p class="post-username">{{ evidence.user.profile.username }}</p>
               <p class="post-timestamp">{{ evidence.delta }}</p>
             </div>
+            <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
+
             <div class="post-data">
               <div class="evidence-text">{{ evidence.text }}</div>
               {% for evidence_image in evidence.images.all %}
@@ -108,10 +144,40 @@
               {% endfor %}
             </div>
             <div class="separator"></div>
+
+            <!--証拠に関連する宣言モーダル-->
+            <div class="modal fade" id="connection-declaration" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">関連する宣言</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="post">
+                      <div class="post-info">
+                        <a href="/profile/{{ evidence.post.user.id }}">
+                          <img src="{{ evidence.post.user.profile.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-user-image">
+                        </a>
+                        <p class="post-username">{{ evidence.post.user.profile.username }}</p>
+                        <p class="post-timestamp">{{ evidence.post.delta }}</p>
+                      </div>
+                      <div class="post-data">
+                        <div class="post-period">期日：{{ evidence.post.period }}</div>
+                        <div class="post-content">宣言：{{ evidence.post.content }}</div>
+                        {% if evidence.post.image %}
+                          <img src="{{ evidence.post.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-image">
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           {% endfor %}
         </div>
       </div>
-
+　
+      <!--フォロー-->
       <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
         {% for profile in follows_profiles %}
           <div class="profile-follows">
@@ -123,6 +189,8 @@
           <div class="profile-separator"></div>
           {% endfor %}
       </div>
+
+      <!--フォロワー-->
       <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
         {% for profile in followed_profiles %}
           <div class="profile-follows">
@@ -187,13 +255,14 @@
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">証拠</h5>
             <button class="confirm-btn" data-bs-dismiss="modal" aria-label="Close">閉じる</button>
+          </div>
         </div>
         <div class="modal-body">
           <form action="/evidence/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" id="hiddenPostId" name="post_id" value="">
             <div class="form-group">
-              <textarea class="form-control" id="content" name="text" rows="6" placeholder="証拠を提出しよう！ 画像の有無は任意です！" required></textarea>
+              <textarea class="form-control" id="content" name="text" rows="6" placeholder="証拠を提出しよう！ 画像は必須です！" required></textarea>
             </div>
             <br>
             <div class="form-group">

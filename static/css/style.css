@@ -198,6 +198,7 @@ label {
 }
 
 /* 投稿 */
+
 .post-info {
   display: flex;
 }
@@ -377,6 +378,7 @@ label {
 /* 証拠表示 */
 .evidence-text {
   margin-bottom: 12px;
+  margin-top: 20px;
 }
 
 .evidence-image {
@@ -387,4 +389,25 @@ label {
   display: inline;
   margin-bottom: 10px;
   margin-right: 10px;
+}
+
+
+/* 関連するボタン */
+.connection-btn {
+  font-size: 12px;
+  border: 1px solid rgb(154, 154, 162);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 6px 12px ;
+  background: black;
+  letter-spacing: 1.2px;
+  margin-left: 80px;
+}
+
+.connection-btn:hover {
+  color: black;
+  background: #fff;
+  border: 1px solid black;
+  cursor: pointer;
 }

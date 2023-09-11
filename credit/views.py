@@ -95,7 +95,9 @@ def profile(request, user_id):
     is_following = request.user.profile.follows.filter(id=profile.id).exists()
     evidences = Evidence.objects.filter(user=user_id).order_by('-timestamp')
     for evidence in evidences:
-        evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+      evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+      evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
+
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
