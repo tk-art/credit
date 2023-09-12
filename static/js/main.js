@@ -92,7 +92,7 @@ $(document).ready(function() {
 });
 
 
-$('.post-image, .evidence-image').click(function() {
+$('.post-image, .evidence-image, .evidence-modal-image').click(function() {
   const modal = $('#modal');
   const modalImage = $('#modal-image');
 

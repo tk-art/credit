@@ -101,6 +101,8 @@ def profile(request, user_id):
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
+      if hasattr(post, 'evidence'):
+        post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
     context = {
       'posts': posts,
       'profile': profile,
