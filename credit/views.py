@@ -215,9 +215,8 @@ def evidence(request):
             evidence.post = post
             evidence.save()
             images = request.FILES.getlist('image')
-            if images:
-              for image in images:
-                  EvidenceImage.objects.create(evidence=evidence, image=image)
+            for image in images:
+                EvidenceImage.objects.create(evidence=evidence, image=image)
             return redirect('profile', user_id=request.user.id)
     else:
         form = EvidenceForm()

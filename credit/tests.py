@@ -1,8 +1,8 @@
 
 from django.urls import reverse
 from django.test import TestCase
-from .models import CustomUser, Profile, Post, Like
-from .forms import SignupForm, ProfileForm
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage
+from .forms import SignupForm, ProfileForm, EvidenceForm, EvidenceImageForm
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from datetime import timedelta
@@ -182,3 +182,35 @@ class FollowTests(TestCase):
         self.user1.profile.follows.add(self.user2.profile)
         self.user1.profile.follows.remove(self.user2.profile)
         self.assertFalse(self.user1.profile.follows.filter(id=self.user2.profile.id).exists())
+
+class EvidenceTests(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create(username='testuser', password='12345')
+        self.post = Post.objects.create(user=self.user, period='period', image=None, content='content')
+        self.post2 = Post.objects.create(user=self.user, period='period', image=None, content='content')
+        self.image = SimpleUploadedFile(name='フリー女.jpeg', content=open('/code/media/item_images/フリー女.jpeg', 'rb').read(), content_type='image/jpeg')
+
+    def test_create_evidence(self):
+        evidence = Evidence.objects.create(user=self.user, post=self.post, text='text')
+        evidence_image = EvidenceImage.objects.create(evidence=evidence, image=self.image)
+        self.assertEqual(evidence.text, 'text')
+        self.assertIsNotNone(evidence_image.image)
+
+    def test_valid_form(self):
+        evidence = Evidence.objects.create(user=self.user, post=self.post, text='text')
+        evidence_image = EvidenceImage.objects.create(evidence=evidence, image=self.image)
+        form = EvidenceForm({'text':evidence.text})
+        form_image = EvidenceImageForm({'image': evidence_image.image}, {'image':evidence_image.image})
+        self.assertTrue(form.is_valid())
+        self.assertTrue(form_image.is_valid())
+
+    def test_evidence_descending_order(self):
+        now = timezone.now()
+
+        evidence1 = Evidence.objects.create(user=self.user, post=self.post, text='text', timestamp= now - timedelta(days=2))
+        evidence2 = Evidence.objects.create(user=self.user, post=self.post2, text='text', timestamp= now - timedelta(days=1))
+
+
+        latest_evidences = Evidence.objects.all().order_by('-timestamp')
+
+        self.assertEqual(list(latest_evidences), [evidence2, evidence1])
