@@ -78,19 +78,27 @@
             {% if post.evidence %}
               <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-{{ post.id }}">関連する証拠</a>
             {% endif %}
-              <div class="post-data">
+            <div class="post-data">
               <div class="post-period">期日：{{ post.period }}</div>
               <div class="post-content">宣言：{{ post.content }}</div>
               {% if post.image %}
                 <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
               {% endif %}
-              <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
-                <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
-                <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
-              </button>
-              {% if not post.evidence %}
-                <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
-              {% endif %}
+              <div class="button-container">
+                <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+                  <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+                  <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                </button>
+                <div class="button-container-right">
+                  {% if not post.evidence %}
+                    <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
+                  {% endif %}
+                  <form action="/delete_post/{{ post.id }}/" method="post">
+                    {% csrf_token %}
+                    <button class="delete-btn">削除</button>
+                  </form>
+                </div>
+              </div>
             </div>
             <div class="separator"></div>
 
@@ -144,6 +152,11 @@
                 <img src="{{ evidence_image.image.url }}" alt="{{ evidence.user.profile.username }}" class="evidence-image">
               {% endfor %}
             </div>
+            <form action="/delete_evidence/{{ evidence.post.id }}/" method="post" class="delete-form">
+              {% csrf_token %}
+              <button class="delete-btn">削除</button>
+            </form>
+
             <div class="separator"></div>
 
             <!--証拠に関連する宣言モーダル-->

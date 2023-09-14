@@ -149,6 +149,20 @@ def post(request):
             return redirect('top')
     return render(request, 'top.html', {'form': form})
 
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST':
+        post.delete()
+        return redirect('profile', user_id=request.user.id)
+    return render(request, 'profile.html')
+
+def delete_evidence(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST':
+        post.evidence.delete()
+        return redirect('profile', user_id=request.user.id)
+    return render(request, 'profile.html')
+
 def get_like_status(request):
     posts = Post.objects.all()
     response_data = {}

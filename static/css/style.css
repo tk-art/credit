@@ -422,3 +422,34 @@ label {
   border: 1px solid black;
   cursor: pointer;
 }
+
+/* 削除ボタン */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-form {
+  text-align: right;
+}
+
+.delete-btn {
+  font-size: 12px;
+  border: 1px solid rgb(154, 154, 162);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  background: black;
+  margin-bottom: 10px;
+  margin-right: 5px;
+  letter-spacing: 1.2px;
+}
+
+.delete-btn:hover {
+  color: #fff;
+  background: #d20808;
+  border: 1px solid #d20808;
+  cursor: pointer;
+}
