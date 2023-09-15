@@ -90,13 +90,15 @@
                   <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
                 </button>
                 <div class="button-container-right">
-                  {% if not post.evidence %}
-                    <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
+                  {% if request.user == profile.user %}
+                    {% if not post.evidence %}
+                      <a class="evidence-btn" data-post-id="{{ post.id }}" data-bs-toggle="modal" data-bs-target="#exampleModal2">証拠提出</a>
+                    {% endif %}
+                    <form action="/delete_post/{{ post.id }}/" method="post">
+                      {% csrf_token %}
+                      <button class="delete-btn">削除</button>
+                    </form>
                   {% endif %}
-                  <form action="/delete_post/{{ post.id }}/" method="post">
-                    {% csrf_token %}
-                    <button class="delete-btn">削除</button>
-                  </form>
                 </div>
               </div>
             </div>
@@ -145,18 +147,19 @@
               <p class="post-timestamp">{{ evidence.delta }}</p>
             </div>
             <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
-
             <div class="post-data">
               <div class="evidence-text">{{ evidence.text }}</div>
               {% for evidence_image in evidence.images.all %}
                 <img src="{{ evidence_image.image.url }}" alt="{{ evidence.user.profile.username }}" class="evidence-image">
               {% endfor %}
             </div>
-            <form action="/delete_evidence/{{ evidence.post.id }}/" method="post" class="delete-form">
-              {% csrf_token %}
-              <button class="delete-btn">削除</button>
-            </form>
-
+            <a href="/evidence_detail/{{ evidence.id }}" class="connection-btn">詳細ページ</a>
+            {% if request.user == profile.user %}
+              <form action="/delete_evidence/{{ evidence.post.id }}/" method="post" class="delete-form">
+                {% csrf_token %}
+                <button class="delete-btn">削除</button>
+              </form>
+            {% endif %}
             <div class="separator"></div>
 
             <!--証拠に関連する宣言モーダル-->

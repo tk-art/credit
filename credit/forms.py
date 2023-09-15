@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Profile, Post, Evidence, EvidenceImage
+from .models import CustomUser, Profile, Post, Evidence, EvidenceImage, EvidenceRating
 
 class SignupForm(forms.ModelForm):
     email_conf = forms.EmailField()
@@ -47,3 +47,8 @@ class EvidenceImageForm(forms.ModelForm):
     class Meta:
         model = EvidenceImage
         fields = ['image']
+
+class EvidenceRatingForm(forms.ModelForm):
+    class Meta:
+        model = EvidenceRating
+        fields = ['star_count', 'text']

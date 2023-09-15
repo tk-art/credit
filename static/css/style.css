@@ -453,3 +453,16 @@ label {
   border: 1px solid #d20808;
   cursor: pointer;
 }
+
+/* スター評価 */
+.stars {
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+.star {
+  font-size: 30px;
+  cursor: pointer;
+}
+.star.selected {
+  color: gold;
+}

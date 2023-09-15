@@ -35,3 +35,11 @@ class Evidence(models.Model):
 class EvidenceImage(models.Model):
     evidence = models.ForeignKey(Evidence, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='item_images/')
+
+class EvidenceRating(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    evidence = models.ForeignKey(Evidence, on_delete=models.CASCADE)
+    star_count = models.IntegerField(default=0)
+    text = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)

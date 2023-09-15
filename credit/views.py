@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import SignupForm, ProfileForm, PostForm, EvidenceForm, EvidenceImageForm
-from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage
+from .forms import SignupForm, ProfileForm, PostForm, EvidenceForm, EvidenceImageForm, EvidenceRatingForm
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -236,3 +236,25 @@ def evidence(request):
         form = EvidenceForm()
         form_image = EvidenceImageForm()
     return render(request, 'top.html', {'form': form, 'form_image': form_image})
+
+def evidence_detail(request, evidence_id):
+    evidence = get_object_or_404(Evidence, id=evidence_id)
+    evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+    context = {
+      'evidence': evidence,
+    }
+    return render(request, 'evidence_detail.html', context)
+
+def submit_rating(request, evidence_id):
+    if request.method == 'POST':
+        form = EvidenceRatingForm(request.POST)
+        evidence = Evidence.objects.get(id=evidence_id)
+        if form.is_valid():
+            star_count = form.cleaned_data['star_count']
+            text = form.cleaned_data['text']
+            EvidenceRating.objects.create(user=request.user, post=evidence.post, evidence=evidence,
+                                              star_count=star_count, text=text)
+            return redirect('evidence_detail', evidence_id=evidence.id)
+        else:
+            form = EvidenceRatingForm()
+        return render(request, 'evidence_detail.html', {'form': form})

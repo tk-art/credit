@@ -130,3 +130,20 @@ $('.evidence-btn').click(function() {
 
   $('#hiddenPostId').val(postId);
 });
+
+/* スター評価 */
+$(".star").click(function() {
+  const rating = $(this).data("rating");
+  setRating(rating);
+  $('#star_rating').val(rating);
+});
+
+function setRating(rating) {
+  $(".star").each(function() {
+    if ($(this).data("rating") <= rating) {
+      $(this).addClass("selected");
+    } else {
+      $(this).removeClass("selected");
+    }
+  });
+}

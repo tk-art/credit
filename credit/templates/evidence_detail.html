@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}証拠詳細{% endblock %}
+{% block content %}
+<div class="container col-md-6">
+  <div class="post">
+    <div class="post-info">
+      <a href="/profile/{{ evidence.user.id }}">
+        <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
+      </a>
+      <p class="post-username">{{ evidence.user.profile.username }}</p>
+      <p class="post-timestamp">{{ evidence.delta }}</p>
+    </div>
+    <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
+    <div class="post-data">
+      <div class="evidence-text">{{ evidence.text }}</div>
+      {% for evidence_image in evidence.images.all %}
+        <img src="{{ evidence_image.image.url }}" alt="{{ evidence.user.profile.username }}" class="evidence-image">
+      {% endfor %}
+    </div>
+    {% if request.user == profile.user %}
+      <form action="/delete_evidence/{{ evidence.post.id }}/" method="post" class="delete-form">
+        {% csrf_token %}
+        <button class="delete-btn">削除</button>
+      </form>
+    {% endif %}
+    <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#evaluation">信頼性評価</a>
+    <div class="separator"></div>
+  </div>
+  <div class="rating">
+
+  </div>
+
+  <!--信頼性評価モーダル-->
+  <div class="modal fade" id="evaluation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">信頼性評価</h5>
+        </div>
+        <div class="modal-body">
+          <form id="rating-form" action="/submit_rating/{{ evidence.id }}/" method="post">
+            {% csrf_token %}
+            <div class="stars">
+              <div class="star" data-rating="1">☆</div>
+              <div class="star" data-rating="2">☆</div>
+              <div class="star" data-rating="3">☆</div>
+              <div class="star" data-rating="4">☆</div>
+              <div class="star" data-rating="5">☆</div>
+            </div>
+            <input type="hidden" name="star_count" id="star_rating">
+            <div class="form-group">
+              <textarea class="form-control" name="text" placeholder="この証拠が信頼できるか評価してください！" rows="5" required></textarea>
+            </div>
+            <br>
+            <button type="submit" class="confirm-btn">投稿</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--証拠に関連する宣言モーダル-->
+  <div class="modal fade" id="connection-declaration" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">関連する宣言</h5>
+        </div>
+        <div class="modal-body">
+          <div class="post">
+            <div class="post-info">
+              <a href="/profile/{{ evidence.post.user.id }}">
+                <img src="{{ evidence.post.user.profile.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ evidence.post.user.profile.username }}</p>
+              <p class="post-timestamp">{{ evidence.post.delta }}</p>
+            </div>
+            <div class="post-data">
+              <div class="post-period">期日：{{ evidence.post.period }}</div>
+              <div class="post-content">宣言：{{ evidence.post.content }}</div>
+              {% if evidence.post.image %}
+                <img src="{{ evidence.post.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-image">
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>　
+</div>
+
+{% endblock %}
