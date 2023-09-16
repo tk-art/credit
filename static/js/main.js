@@ -58,7 +58,7 @@ function followButtonClicked() {
     success: function(response) {
       if (response.success) {
         isFollowing = response.is_following;
-        console.log("isFollowing value is: ", isFollowing);  // デバッグ用
+        console.log("isFollowing value is: ", isFollowing);
 
         if (isFollowing === true) {
           $("#follow-button").addClass("follow-btn");
@@ -147,3 +147,23 @@ function setRating(rating) {
     }
   });
 }
+
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    url: "/get_star_status/",
+    success: function(response) {
+      $(".rating-star").each(function() {
+        var star = $(this);
+        var rating = star.data("rating");
+        var evidenceId = star.data("evidence-id");
+        if (response[evidenceId] && rating <= response[evidenceId]) {
+          star.addClass("selected");
+        }
+      });
+    },
+    error: function(xhr, status, error) {
+      console.log(error);
+    }
+  });
+});

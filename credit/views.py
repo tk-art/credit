@@ -239,9 +239,15 @@ def evidence(request):
 
 def evidence_detail(request, evidence_id):
     evidence = get_object_or_404(Evidence, id=evidence_id)
+    evidence_ratings = EvidenceRating.objects.all().order_by('-timestamp')
     evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+    for evidence_rating in evidence_ratings:
+        evidence_rating.delta = human_readable_time_from_utc(evidence_rating.timestamp)
+
     context = {
       'evidence': evidence,
+      'evidence_ratings': evidence_ratings,
+
     }
     return render(request, 'evidence_detail.html', context)
 
@@ -258,3 +264,11 @@ def submit_rating(request, evidence_id):
         else:
             form = EvidenceRatingForm()
         return render(request, 'evidence_detail.html', {'form': form})
+
+def get_star_status(request):
+    evidence_ratings = EvidenceRating.objects.all()
+    response_data = {}
+    for evidence in evidence_ratings:
+        response_data[evidence.id] = evidence.star_count
+
+    return JsonResponse(response_data)

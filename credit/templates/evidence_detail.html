@@ -2,7 +2,7 @@
 {% block title %}証拠詳細{% endblock %}
 {% block content %}
 <div class="container col-md-6">
-  <div class="post">
+  <div class="evidence-detail">
     <div class="post-info">
       <a href="/profile/{{ evidence.user.id }}">
         <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
@@ -23,14 +23,35 @@
         <button class="delete-btn">削除</button>
       </form>
     {% endif %}
-    <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#evaluation">信頼性評価</a>
-    <div class="separator"></div>
+    <a class="connection-btn rating-btn" data-bs-toggle="modal" data-bs-target="#evaluation">信頼性評価</a>
   </div>
+  <div class="separator"></div>
+
+  <!--信頼性評価-->
   <div class="rating">
-
+    {% for evidence in evidence_ratings %}
+      <div class="post-info">
+        <a href="/profile/{{ evidence.user.id }}">
+          <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
+        </a>
+        <p class="post-username">{{ evidence.user.profile.username }}</p>
+        <p class="post-timestamp">{{ evidence.delta }}</p>
+      </div>
+      <div class="evidence-content">
+        <div class="stars">
+          <div class="rating-star" data-rating="1" data-evidence-id="{{ evidence.id }}">☆</div>
+          <div class="rating-star" data-rating="2" data-evidence-id="{{ evidence.id }}">☆</div>
+          <div class="rating-star" data-rating="3" data-evidence-id="{{ evidence.id }}">☆</div>
+          <div class="rating-star" data-rating="4" data-evidence-id="{{ evidence.id }}">☆</div>
+          <div class="rating-star" data-rating="5" data-evidence-id="{{ evidence.id }}">☆</div>
+        </div>
+        <p>{{ evidence.text }}</p>
+      </div>
+      <div class="separator"></div>
+    {% endfor %}
   </div>
 
-  <!--信頼性評価モーダル-->
+  <!--信頼性評価用モーダル-->
   <div class="modal fade" id="evaluation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -87,6 +108,11 @@
       </div>
     </div>
   </div>　
+
+  <div id="modal" class="modal">
+    <img id="modal-image" src="" alt="Full Image" class="modal-image">
+    <span id="close-modal" class="close-modal">Close</span>
+  </div>
 </div>
 
 {% endblock %}

@@ -20,6 +20,7 @@ urlpatterns = [
     path('delete_evidence/<int:post_id>/', views.delete_evidence, name='delete_evidence'),
     path('evidence_detail/<int:evidence_id>/', views.evidence_detail, name='evidence_detail'),
     path('submit_rating/<int:evidence_id>/', views.submit_rating, name='submit_rating'),
+    path('get_star_status/', views.get_star_status, name='get_star_status'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

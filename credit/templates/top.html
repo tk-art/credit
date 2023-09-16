@@ -26,11 +26,14 @@
             <p class="post-username">{{ post.user.profile.username }}</p>
             <p class="post-timestamp">{{ post.delta }}</p>
           </div>
+          {% if post.evidence %}
+            <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-{{ post.id }}">関連する証拠</a>
+          {% endif %}
           <div class="post-data">
             <div class="post-period">期日：{{ post.period }}</div>
             <div class="post-content">宣言：{{ post.content }}</div>
             {% if post.image %}
-              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image" id="image-id">
+              <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
             {% endif %}
 
             <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
@@ -76,6 +79,34 @@
     {% endif %}
   </div>
 
+  <!--投稿に関連した証拠モーダル-->
+  <div class="modal fade" id="connection-evidence-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">関連する証拠</h5>
+        </div>
+        <div class="modal-body">
+          <div class="post">
+            <div class="post-info">
+              <a href="/profile/{{ post.evidence.user.id }}">
+                <img src="{{ post.evidence.user.profile.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ post.evidence.user.profile.username }}</p>
+              <p class="post-timestamp">{{ post.evidence.delta }}</p>
+            </div>
+            <div class="post-data">
+              <div class="evidence-text">{{ post.evidence.text }}</div>
+              {% for evidence_image in post.evidence.images.all %}
+                <img src="{{ evidence_image.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="evidence-modal-image">
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 　<!--宣言モーダル-->
   <div class="modal fade modal-back" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-top">
@@ -107,7 +138,6 @@
         </div>
       </div>
     </div>
-  </div>
   </div>
 
   <!--画像用モーダル-->

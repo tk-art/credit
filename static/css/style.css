@@ -246,6 +246,7 @@ label {
   border-radius: 10px;
   display: block;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 /* ハートアイコン */
@@ -463,6 +464,22 @@ label {
   font-size: 30px;
   cursor: pointer;
 }
-.star.selected {
+.selected {
   color: gold;
+}
+
+.rating {
+  margin-left: 60px;
+}
+
+.evidence-detail {
+  margin-bottom: 30px;
+}
+
+.evidence-content {
+  margin-left: 80px;
+}
+
+.rating-star {
+  font-size: 15px;
 }
