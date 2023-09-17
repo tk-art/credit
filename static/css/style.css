@@ -294,7 +294,7 @@ label {
   align-items: center;
   font-size: 18px;
   margin-top: auto;
-  margin-bottom: auto;
+  margin-bottom: 20px;
 }
 
 .follow {
@@ -482,4 +482,9 @@ label {
 
 .rating-star {
   font-size: 15px;
+}
+
+/* スター　平均値 */
+.star-avg {
+  display: inline;
 }

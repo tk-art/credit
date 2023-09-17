@@ -92,17 +92,17 @@ $(document).ready(function() {
 });
 
 
-$('.post-image, .evidence-image, .evidence-modal-image').click(function() {
-  const modal = $('#modal');
-  const modalImage = $('#modal-image');
+  $('.post-image, .evidence-image, .evidence-modal-image').click(function() {
+    const modal = $('#modal');
+    const modalImage = $('#modal-image');
 
-  modalImage.attr('src', $(this).attr('src'));
-  modal.show();
-});
+    modalImage.attr('src', $(this).attr('src'));
+    modal.show();
+  });
 
-$('#close-modal').click(function() {
-  $('#modal').hide();
-});
+  $('#close-modal').click(function() {
+    $('#modal').hide();
+  });
 
 /* 証拠画像プレビュー */
 $(document).ready(function() {
@@ -164,6 +164,23 @@ $(document).ready(function() {
     },
     error: function(xhr, status, error) {
       console.log(error);
+    }
+  });
+});
+
+$(document).ready(function() {
+  var avg_star = parseFloat($("p[data-avg]").data("avg"));
+  var full_stars = Math.floor(avg_star);
+  var partial_star = avg_star - full_stars;
+
+  $(".rating-avg_star").each(function() {
+    var star = $(this);
+    var rating = star.data("rating_avg");
+    if (rating <= full_stars) {
+      star.addClass("selected");
+    } else if (rating === full_stars + 1) {
+      star.addClass("selected");
+      star.css('width', (partial_star * 100) + '%');
     }
   });
 });

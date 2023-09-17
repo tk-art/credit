@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 import pytz
 from datetime import datetime
 from django.http import JsonResponse
-
+from django.db.models import Avg
 
 def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
     local_tz = pytz.timezone(timezone)
@@ -38,8 +38,13 @@ def top(request):
   if request.user.is_authenticated:
     follows_profiles = request.user.profile.follows.all()
     follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
+    for post in follows_posts:
+        if hasattr(post, 'evidence'):
+            post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
   for post in posts:
     post.delta = human_readable_time_from_utc(post.timestamp)
+    if hasattr(post, 'evidence'):
+      post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
   context = {
     'posts': posts,
     'follows_posts': follows_posts,
@@ -244,10 +249,17 @@ def evidence_detail(request, evidence_id):
     for evidence_rating in evidence_ratings:
         evidence_rating.delta = human_readable_time_from_utc(evidence_rating.timestamp)
 
+    evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
+    user_has_rated = any(rating.user == request.user for rating in evidence_rate)
+
+    average_rating = evidence_rate.aggregate(Avg('star_count'))
+    rounded_avg = round(average_rating['star_count__avg'], 1)
+
     context = {
       'evidence': evidence,
       'evidence_ratings': evidence_ratings,
-
+      'user_has_rated': user_has_rated,
+      'rounded_avg': rounded_avg,
     }
     return render(request, 'evidence_detail.html', context)
 

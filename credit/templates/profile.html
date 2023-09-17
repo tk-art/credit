@@ -144,6 +144,15 @@
                 <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
               </a>
               <p class="post-username">{{ evidence.user.profile.username }}</p>
+              <div class="evidence-content">
+                <div class="stars">
+                  <div class="rating-star" data-rating="1" data-evidence-id="{{ evidence.id }}">☆</div>
+                  <div class="rating-star" data-rating="2" data-evidence-id="{{ evidence.id }}">☆</div>
+                  <div class="rating-star" data-rating="3" data-evidence-id="{{ evidence.id }}">☆</div>
+                  <div class="rating-star" data-rating="4" data-evidence-id="{{ evidence.id }}">☆</div>
+                  <div class="rating-star" data-rating="5" data-evidence-id="{{ evidence.id }}">☆</div>
+                </div>
+              </div>
               <p class="post-timestamp">{{ evidence.delta }}</p>
             </div>
             <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
