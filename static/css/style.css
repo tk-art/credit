@@ -401,6 +401,7 @@ label {
   display: inline;
   margin-bottom: 10px;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 
@@ -464,9 +465,6 @@ label {
   font-size: 30px;
   cursor: pointer;
 }
-.selected {
-  color: gold;
-}
 
 .rating {
   margin-left: 60px;
@@ -482,9 +480,46 @@ label {
 
 .rating-star {
   font-size: 15px;
+  color: gray;
+}
+
+.selected {
+  color: gold;
 }
 
 /* スター　平均値 */
 .star-avg {
   display: inline;
+  margin-left: 10px;
+}
+
+.rating-avg-star {
+  font-size: 16px;
+  color: gray;
+  overflow: hidden;
+  margin-right: 5px;
+}
+
+.rating-avg-star.selected {
+  color: gold;
+}
+
+/* 詳細ページボタン */
+.evidence-detail-btn {
+  font-size: 12px;
+  border: 1px solid rgb(154, 154, 162);
+  color: black;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 6px 12px ;
+  background: #fff;
+  letter-spacing: 1.2px;
+  margin-left: 80px;
+}
+
+.evidence-detail-btn:hover {
+  color: #fff;
+  background: rgb(99, 99, 187);
+  border: 1px solid rgb(99, 99, 187);
+  cursor: pointer;
 }

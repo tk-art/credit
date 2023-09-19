@@ -66,6 +66,7 @@
                         <img src="{{ evidence_image.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="evidence-modal-image">
                       {% endfor %}
                     </div>
+                    <a href="/evidence_detail/{{ post.evidence.id }}" class="evidence-detail-btn">詳細ページ</a>
                   </div>
                 </div>
               </div>
@@ -101,9 +102,9 @@
               <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
               <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
             </button>
-
           </div>
           <div class="separator"></div>
+
           <!--投稿に関連した証拠モーダル-->
           <div class="modal fade" id="connection-evidence-follow-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -126,6 +127,7 @@
                         <img src="{{ evidence_image.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="evidence-modal-image">
                       {% endfor %}
                     </div>
+                    <a href="/evidence_detail/{{ post.evidence.id }}" class="evidence-detail-btn">詳細ページ</a>
                   </div>
                 </div>
               </div>

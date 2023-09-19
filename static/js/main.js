@@ -168,19 +168,28 @@ $(document).ready(function() {
   });
 });
 
+
 $(document).ready(function() {
   var avg_star = parseFloat($("p[data-avg]").data("avg"));
   var full_stars = Math.floor(avg_star);
   var partial_star = avg_star - full_stars;
 
-  $(".rating-avg_star").each(function() {
+  if (avg_star === 0) {
+    return;
+  }
+
+  $(".rating-avg-star").each(function() {
     var star = $(this);
-    var rating = star.data("rating_avg");
+    var rating = star.data("rating-avg");
     if (rating <= full_stars) {
       star.addClass("selected");
+      console.log(star.width());
     } else if (rating === full_stars + 1) {
       star.addClass("selected");
-      star.css('width', (partial_star * 100) + '%');
+      var starWidth = star.width();
+      console.log("star width:",  starWidth);
+      var partialWidth = starWidth * partial_star;
+      star.css('width', partialWidth + 'px');
     }
   });
 });
