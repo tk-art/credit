@@ -103,16 +103,7 @@
               </div>
             </div>
             <div class="separator"></div>
-            <div class="evidence-content">
-              <div class="stars">
-                <div class="rating-avg-star" data-rating-avg="1">★</div>
-                <div class="rating-avg-star" data-rating-avg="2">★</div>
-                <div class="rating-avg-star" data-rating-avg="3">★</div>
-                <div class="rating-avg-star" data-rating-avg="4">★</div>
-                <div class="rating-avg-star" data-rating-avg="5">★</div>
-              </div>
-              <p class="star-avg" data-avg="{{ rounded_avg }}">{{ rounded_avg }}</p>
-            </div>
+
             <!--投稿に関連する証拠モーダル-->
             <div class="modal fade" id="connection-evidence-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog">
@@ -144,16 +135,6 @@
           {% endfor %}
         </div>
       </div>
-      <div class="evidence-content">
-        <div class="stars">
-          <div class="rating-avg-star" data-rating-avg="1">★</div>
-          <div class="rating-avg-star" data-rating-avg="2">★</div>
-          <div class="rating-avg-star" data-rating-avg="3">★</div>
-          <div class="rating-avg-star" data-rating-avg="4">★</div>
-          <div class="rating-avg-star" data-rating-avg="5">★</div>
-        </div>
-        <p class="star-avg" data-avg="{{ rounded_avg }}">{{ rounded_avg }}</p>
-      </div>
 
       <!--証拠-->
       <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
@@ -164,19 +145,6 @@
                 <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
               </a>
               <p class="post-username">{{ evidence.user.profile.username }}</p>
-
-              <!--問題はモーダルにあるか、もしやふくすうのevidenceがあるから判別できないのか-->
-              <div class="evidence-content">
-                <div class="stars">
-                  <div class="rating-avg-star" data-rating-avg="1">★</div>
-                  <div class="rating-avg-star" data-rating-avg="2">★</div>
-                  <div class="rating-avg-star" data-rating-avg="3">★</div>
-                  <div class="rating-avg-star" data-rating-avg="4">★</div>
-                  <div class="rating-avg-star" data-rating-avg="5">★</div>
-                </div>
-                <p class="star-avg" data-avg="{{ rounded_avg }}">{{ rounded_avg }}</p>
-              </div>
-
               <p class="post-timestamp">{{ evidence.delta }}</p>
             </div>
             <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
@@ -341,7 +309,6 @@
 </div>
 
 <script>
-  var userId = '{{ profile.user.id }}';
   var csrfToken = '{{ csrf_token }}';
 </script>
 {% endblock %}

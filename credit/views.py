@@ -102,13 +102,6 @@ def profile(request, user_id):
     for evidence in evidences:
       evidence.delta = human_readable_time_from_utc(evidence.timestamp)
       evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
-      evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
-
-      if evidence_rate:
-        average_rating = evidence_rate.aggregate(Avg('star_count'))
-        rounded_avg = round(average_rating['star_count__avg'], 1)
-      else:
-          rounded_avg = 0
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
@@ -122,7 +115,6 @@ def profile(request, user_id):
       'follows_profiles': follows_profiles,
       'followed_profiles': followed_profiles,
       'evidences': evidences,
-      'rounded_avg': rounded_avg,
     }
     return render(request, 'profile.html', context)
 
@@ -255,6 +247,7 @@ def evidence_detail(request, evidence_id):
     evidence = get_object_or_404(Evidence, id=evidence_id)
     evidence_ratings = EvidenceRating.objects.filter(evidence_id=evidence.id).order_by('-timestamp')
     evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+    evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
     for evidence_rating in evidence_ratings:
         evidence_rating.delta = human_readable_time_from_utc(evidence_rating.timestamp)
 

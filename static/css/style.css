@@ -493,6 +493,14 @@ label {
   margin-left: 10px;
 }
 
+.star {
+  color: gray;
+}
+
+.star.selected {
+  color: gold;
+}
+
 .rating-avg-star {
   font-size: 16px;
   color: gray;
