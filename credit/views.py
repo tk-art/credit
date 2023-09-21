@@ -43,6 +43,7 @@ def top(request):
             post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
   for post in posts:
     post.delta = human_readable_time_from_utc(post.timestamp)
+    post.formatted_deadline = post.deadline.strftime('%Y-%m-%d %H:%Mまで')
     if hasattr(post, 'evidence'):
       post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
   context = {
@@ -91,8 +92,24 @@ def logout_view(request):
     logout(request)
     return redirect('top')
 
+def calculate_achievement_rate(user):
+    posts = Post.objects.filter(user=user)
+    on_time_submissions = 0
+
+    for post in posts:
+        if hasattr(post, 'evidence'):
+            evidence = post.evidence
+            if evidence and evidence.timestamp <= post.deadline:
+                on_time_submissions += 1
+
+    if not posts:
+        return 0
+
+    return (on_time_submissions / len(posts)) * 100
+
 
 def profile(request, user_id):
+    user = CustomUser.objects.get(pk=user_id)
     profile = get_object_or_404(Profile, user=user_id)
     posts = Post.objects.filter(user_id=user_id).order_by('-timestamp')
     follows_profiles = profile.follows.all()
@@ -108,6 +125,8 @@ def profile(request, user_id):
       if hasattr(post, 'evidence'):
         post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
 
+    rate = calculate_achievement_rate(user)
+
 
     context = {
       'posts': posts,
@@ -115,6 +134,7 @@ def profile(request, user_id):
       'follows_profiles': follows_profiles,
       'followed_profiles': followed_profiles,
       'evidences': evidences,
+      'rate': rate,
     }
     return render(request, 'profile.html', context)
 
@@ -146,11 +166,15 @@ def post(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            period = form.cleaned_data['period']
-            content = form.cleaned_data['content']
-            image = form.cleaned_data.get('image', None)
+            post = form.save(commit=False)
+            date_str = request.POST['deadline_date']
+            time_str = request.POST['deadline_time']
 
-            Post.objects.create(user=request.user, period=period, image=image, content=content)
+            deadline_datetime = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M")
+            post.deadline = deadline_datetime
+            post.user = request.user
+
+            post.save()
 
             return redirect('top')
     return render(request, 'top.html', {'form': form})

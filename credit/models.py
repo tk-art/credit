@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from datetime import datetime
 
 class CustomUser(AbstractUser):
   pass
@@ -14,7 +15,7 @@ class Profile(models.Model):
 
 class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    period = models.CharField(max_length=50)
+    deadline = models.DateTimeField(default=datetime.now)
     image = models.ImageField(upload_to='item_images/', null=True, blank=True)
     content = models.TextField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)

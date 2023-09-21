@@ -36,7 +36,7 @@ class ProfileForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['period', 'image', 'content']
+        fields = ['image', 'content']
 
 class EvidenceForm(forms.ModelForm):
     class Meta:

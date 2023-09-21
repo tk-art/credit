@@ -30,7 +30,7 @@
             <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-{{ post.id }}">関連する証拠</a>
           {% endif %}
           <div class="post-data">
-            <div class="post-period">期日：{{ post.period }}</div>
+            <div class="post-period">期日：{{ post.formatted_deadline }}</div>
             <div class="post-content">宣言：{{ post.content }}</div>
             {% if post.image %}
               <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
@@ -158,8 +158,13 @@
           <form action="/post/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
-              <label for="period">いつまでに？</label>
-              <input type="text" class="form-control" id="period" name="period" placeholder="⚪︎月⚪︎⚪︎日までに　今日の18:00頃までに" required>
+              <label for="deadline-date">日付</label>
+              <input type="date" class="form-control" id="deadline-date" name="deadline_date" required>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="deadline-time">時間</label>
+              <input type="time" class="form-control" id="deadline-time" name="deadline_time" required>
             </div>
             <br>
             <div class="form-group">
