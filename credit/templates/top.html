@@ -92,7 +92,7 @@
             <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-follow-{{ post.id }}">関連する証拠</a>
           {% endif %}
           <div class="post-data">
-            <div class="post-period">期日：{{ post.period }}</div>
+            <div class="post-period">期日：{{ post.formatted_deadline }}</div>
             <div class="post-content">宣言：{{ post.content }}</div>
             {% if post.image %}
               <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">

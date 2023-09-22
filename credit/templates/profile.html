@@ -26,8 +26,12 @@
     <div class="profile-top">
       <p class="profile-username">{{ profile.username }}</p>
       <div class="achievements">
-        <p class="rate">達成率 : {{ rate }}</p>
-        <p>評価 ★</p>
+        <div class="rate">
+          <p>達成率</p>{{ rate }}%
+        </div>
+        <div class="star-avg">
+          <p>評価 <span>★</span></p>{{ ratin }}
+        </div>
       </div>
 
       <p class="profile-content">{{ profile.content }}</p>
@@ -84,7 +88,7 @@
               <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-{{ post.id }}">関連する証拠</a>
             {% endif %}
             <div class="post-data">
-              <div class="post-period">期日：{{ post.period }}</div>
+              <div class="post-period">期日：{{ post.formatted_deadline }}</div>
               <div class="post-content">宣言：{{ post.content }}</div>
               {% if post.image %}
                 <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">

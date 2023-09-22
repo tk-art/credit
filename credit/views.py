@@ -39,6 +39,7 @@ def top(request):
     follows_profiles = request.user.profile.follows.all()
     follows_posts = Post.objects.filter(user__profile__in=follows_profiles).order_by('-timestamp')
     for post in follows_posts:
+        post.formatted_deadline = post.deadline.strftime('%Y-%m-%d %H:%Mまで')
         if hasattr(post, 'evidence'):
             post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
   for post in posts:
@@ -116,16 +117,30 @@ def profile(request, user_id):
     followed_profiles = profile.followed_by.all()
     is_following = request.user.profile.follows.filter(id=profile.id).exists()
     evidences = Evidence.objects.filter(user=user_id).order_by('-timestamp')
+
+    avg_ratings = 0
+
     for evidence in evidences:
       evidence.delta = human_readable_time_from_utc(evidence.timestamp)
       evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
+      evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
+
+      if evidence_rate:
+        average_rating = evidence_rate.aggregate(Avg('star_count'))
+        rounded_avg = round(average_rating['star_count__avg'], 1)
+        avg_ratings += rounded_avg
+      else:
+          rounded_avg = 0
+
+    ratin = avg_ratings / len(evidences)
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
+      post.formatted_deadline = post.deadline.strftime('%Y-%m-%d %H:%Mまで')
       if hasattr(post, 'evidence'):
         post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
 
-    rate = calculate_achievement_rate(user)
+    rate = round(calculate_achievement_rate(user), 1)
 
 
     context = {
@@ -135,6 +150,7 @@ def profile(request, user_id):
       'followed_profiles': followed_profiles,
       'evidences': evidences,
       'rate': rate,
+      'ratin': ratin,
     }
     return render(request, 'profile.html', context)
 
