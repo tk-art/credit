@@ -553,12 +553,12 @@ label {
   padding-right: 10px;
 }
 
-.star-avg {
+.star-average {
   display: flex;
   align-items: center;
 }
 
-.star-avg p {
+.star-average p {
   color: gray;
   margin-right: 10px;
   font-size: 12px;
@@ -566,6 +566,6 @@ label {
   padding-right: 10px;
 }
 
-.star-avg span {
+.star-average span {
   color: gold;
 }

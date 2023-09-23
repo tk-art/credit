@@ -132,7 +132,10 @@ def profile(request, user_id):
       else:
           rounded_avg = 0
 
-    ratin = avg_ratings / len(evidences)
+    if len(evidences) == 0:
+        ratin = 0
+    else:
+        ratin = avg_ratings / len(evidences)
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)

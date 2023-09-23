@@ -1,7 +1,7 @@
 
 from django.urls import reverse
 from django.test import TestCase
-from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating
 from .forms import SignupForm, ProfileForm, EvidenceForm, EvidenceImageForm
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -122,19 +122,19 @@ class PostTest(TestCase):
         self.image = SimpleUploadedFile(name='フリー女.jpeg', content=open('/code/media/item_images/フリー女.jpeg', 'rb').read(), content_type='image/jpeg')
 
     def test_post(self):
-        post = Post.objects.create(user=self.user, period='period', image=None, content='content')
-        self.assertEqual(post.period, 'period')
+        post = Post.objects.create(user=self.user, image=None, content='content')
+        self.assertIsNotNone(post.deadline)
         self.assertEqual(post.content, 'content')
 
     def test_image_post(self):
-        post = Post.objects.create(user=self.user, period='period', image=self.image, content='content')
+        post = Post.objects.create(user=self.user, image=self.image, content='content')
         self.assertIsNotNone(post.image)
 
     def test_post_descending_order(self):
         now = timezone.now()
 
-        post1 = Post.objects.create(user=self.user, period='period2', image=None, content='content2', timestamp= now - timedelta(days=2))
-        post2 = Post.objects.create(user=self.user, period='period1', image=None, content='content1', timestamp= now - timedelta(days=1))
+        post1 = Post.objects.create(user=self.user, image=None, content='content2', timestamp= now - timedelta(days=2))
+        post2 = Post.objects.create(user=self.user, image=None, content='content1', timestamp= now - timedelta(days=1))
 
         latest_posts = Post.objects.all().order_by('-timestamp')
 
@@ -144,7 +144,7 @@ class PostTest(TestCase):
 class LikeTest(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username='testuser', password='12345')
-        self.post = Post.objects.create(user=self.user, period='period', content='content')
+        self.post = Post.objects.create(user=self.user, content='content')
 
     def test_like(self):
         Like.objects.create(user=self.user, post=self.post, is_liked=True)
@@ -186,8 +186,8 @@ class FollowTests(TestCase):
 class EvidenceTests(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(username='testuser', password='12345')
-        self.post = Post.objects.create(user=self.user, period='period', image=None, content='content')
-        self.post2 = Post.objects.create(user=self.user, period='period', image=None, content='content')
+        self.post = Post.objects.create(user=self.user, image=None, content='content')
+        self.post2 = Post.objects.create(user=self.user, image=None, content='content')
         self.image = SimpleUploadedFile(name='フリー女.jpeg', content=open('/code/media/item_images/フリー女.jpeg', 'rb').read(), content_type='image/jpeg')
 
     def test_create_evidence(self):
@@ -214,3 +214,55 @@ class EvidenceTests(TestCase):
         latest_evidences = Evidence.objects.all().order_by('-timestamp')
 
         self.assertEqual(list(latest_evidences), [evidence2, evidence1])
+
+class DeleteTest(TestCase):
+    def setUp(self):
+       self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+       self.post = Post.objects.create(user=self.user, content='content')
+       self.evidence = Evidence.objects.create(user=self.user, post=self.post, text='text')
+
+    def test_delete_post(self):
+        # 確認：ユーザーが最初は存在する
+        self.assertTrue(Post.objects.filter(content='content').exists())
+
+        # ユーザー削除のエンドポイントにリクエストを送信
+        response = self.client.post(reverse('delete_post', args=[self.post.id]))
+
+        # 確認：ユーザーが削除された
+        self.assertFalse(CustomUser.objects.filter(content='content').exists())
+
+
+
+class RatingTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+        self.user2 = CustomUser.objects.create_user(username='testuser2', password='testpass')
+        self.post = Post.objects.create(user=self.user, content='content')
+        self.evidence = Evidence.objects.create(user=self.user, post=self.post, text='text')
+        self.url = reverse('evidence_detail', args=[self.evidence.id])
+
+    def test_evidence_retrieval(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['evidence'], self.evidence)
+
+    def test_404_for_nonexistent_evidence(self):
+        url = reverse('evidence_detail', args=[9999])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_user_has_rated(self):
+        EvidenceRating.objects.create(evidence=self.evidence, user=self.user, post=self.post, star_count=4)
+        self.client.login(username='testuser', password='testpassword')
+        response = self.client.get(self.url)
+        self.assertTrue(response.context['user_has_rated'])
+
+    def test_average_rating_calculation(self):
+        EvidenceRating.objects.create(evidence=self.evidence, post=self.post, user=self.user, star_count=4)
+        EvidenceRating.objects.create(evidence=self.evidence, post=self.post, user=self.user2, star_count=5)
+        response = self.client.get(self.url)
+        self.assertEqual(response.context['rounded_avg'], 4.5)
+
+    def test_template_rendering(self):
+        response = self.client.get(self.url)
+        self.assertTemplateUsed(response, 'evidence_detail.html')
