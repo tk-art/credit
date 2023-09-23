@@ -222,14 +222,14 @@ class DeleteTest(TestCase):
        self.evidence = Evidence.objects.create(user=self.user, post=self.post, text='text')
 
     def test_delete_post(self):
-        # 確認：ユーザーが最初は存在する
         self.assertTrue(Post.objects.filter(content='content').exists())
-
-        # ユーザー削除のエンドポイントにリクエストを送信
         response = self.client.post(reverse('delete_post', args=[self.post.id]))
+        self.assertFalse(Post.objects.filter(content='content').exists())
 
-        # 確認：ユーザーが削除された
-        self.assertFalse(CustomUser.objects.filter(content='content').exists())
+    def test_delete_evidence(self):
+        self.assertTrue(Evidence.objects.filter(text='text').exists())
+        response = self.client.post(reverse('delete_evidence', args=[self.evidence.id]))
+        self.assertFalse(Evidence.objects.filter(text='text').exists())
 
 
 
@@ -253,7 +253,7 @@ class RatingTest(TestCase):
 
     def test_user_has_rated(self):
         EvidenceRating.objects.create(evidence=self.evidence, user=self.user, post=self.post, star_count=4)
-        self.client.login(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpass')
         response = self.client.get(self.url)
         self.assertTrue(response.context['user_has_rated'])
 

@@ -108,6 +108,26 @@ def calculate_achievement_rate(user):
 
     return (on_time_submissions / len(posts)) * 100
 
+def avg_rating(user):
+    evidences = Evidence.objects.filter(user=user)
+
+    avg_ratings = 0
+    for evidence in evidences:
+        evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
+        if evidence_rate.exists():
+          average_rating = evidence_rate.aggregate(Avg('star_count'))
+          rounded_avg = round(average_rating['star_count__avg'], 1)
+          avg_ratings += rounded_avg
+        else:
+            rounded_avg = 0
+
+    if len(evidences) == 0:
+        ratin = 0
+    else:
+        ratin = avg_ratings / len(evidences)
+
+    return ratin
+
 
 def profile(request, user_id):
     user = CustomUser.objects.get(pk=user_id)
@@ -118,24 +138,11 @@ def profile(request, user_id):
     is_following = request.user.profile.follows.filter(id=profile.id).exists()
     evidences = Evidence.objects.filter(user=user_id).order_by('-timestamp')
 
-    avg_ratings = 0
-
     for evidence in evidences:
       evidence.delta = human_readable_time_from_utc(evidence.timestamp)
       evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
       evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
 
-      if evidence_rate:
-        average_rating = evidence_rate.aggregate(Avg('star_count'))
-        rounded_avg = round(average_rating['star_count__avg'], 1)
-        avg_ratings += rounded_avg
-      else:
-          rounded_avg = 0
-
-    if len(evidences) == 0:
-        ratin = 0
-    else:
-        ratin = avg_ratings / len(evidences)
 
     for post in posts:
       post.delta = human_readable_time_from_utc(post.timestamp)
@@ -144,6 +151,7 @@ def profile(request, user_id):
         post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
 
     rate = round(calculate_achievement_rate(user), 1)
+    ratin = avg_rating(user)
 
 
     context = {
@@ -202,14 +210,14 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
         post.delete()
-        return redirect('profile', user_id=request.user.id)
+        return redirect('profile', user_id=post.user.id)
     return render(request, 'profile.html')
 
 def delete_evidence(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
         post.evidence.delete()
-        return redirect('profile', user_id=request.user.id)
+        return redirect('profile', user_id=post.user.id)
     return render(request, 'profile.html')
 
 def get_like_status(request):
