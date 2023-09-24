@@ -193,3 +193,31 @@ $(document).ready(function() {
     }
   });
 });
+
+$(document).ready(function() {
+  function checkNewNotifications() {
+    $.ajax({
+      url: '/api/notifications/check',
+      method: 'GET',
+      success: function(response) {
+        console.log(response);
+        if (response.hasNewNotification) {
+          showNewNotification();
+        }
+      },
+      error: function(error) {
+        console.log('通知の問い合わせに失敗しました。', error);
+      }
+    });
+  }
+
+  checkNewNotifications();
+
+  $('#notification-link').click(function() {
+    $('#notification-icon').empty();
+  });
+
+  function showNewNotification() {
+    $('#notification-icon').html('⭕️');
+  }
+});

@@ -569,3 +569,14 @@ label {
 .star-average span {
   color: gold;
 }
+
+/* 通知 */
+.notification-midasi {
+  letter-spacing: 1.2px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.notification-content {
+  margin-left: 20px;
+}

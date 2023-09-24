@@ -44,3 +44,10 @@ class EvidenceRating(models.Model):
     star_count = models.IntegerField(default=0)
     text = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+class Notification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+    read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)

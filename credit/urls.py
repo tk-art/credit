@@ -21,6 +21,8 @@ urlpatterns = [
     path('evidence_detail/<int:evidence_id>/', views.evidence_detail, name='evidence_detail'),
     path('submit_rating/<int:evidence_id>/', views.submit_rating, name='submit_rating'),
     path('get_star_status/', views.get_star_status, name='get_star_status'),
+    path('notification/', views.notification, name='notification'),
+    path('api/notifications/check/', views.check_new_notifications, name='check_new_notifications'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

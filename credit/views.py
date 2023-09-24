@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import SignupForm, ProfileForm, PostForm, EvidenceForm, EvidenceImageForm, EvidenceRatingForm
-from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating, Notification
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
@@ -10,6 +10,7 @@ import pytz
 from datetime import datetime
 from django.http import JsonResponse
 from django.db.models import Avg
+from django.core.paginator import Paginator
 
 def human_readable_time_from_utc(timestamp, timezone='Asia/Tokyo'):
     local_tz = pytz.timezone(timezone)
@@ -236,6 +237,10 @@ def like_post(request, post_id):
     if created:
         post.like_count += 1
         is_liked = True
+        if request.user != post.user:
+            notification_content = f"{request.user.username}さんが宣言「{post.content}」にいいねしました"
+            Notification.objects.create(user=post.user, post=post, content=notification_content)
+
 
     else:
         like.delete()
@@ -259,11 +264,14 @@ def follow(request, user_id):
         else:
             request.user.profile.follows.add(user_to_toggle.profile)
             is_following = True
+            notification_content = f"{request.user.username}さんにフォローされました"
+            Notification.objects.create(user=user_to_toggle, content=notification_content)
+
         response_data = {
             'success': True,
             'is_following': is_following
         }
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         pass
 
     return JsonResponse(response_data)
@@ -328,6 +336,9 @@ def submit_rating(request, evidence_id):
             text = form.cleaned_data['text']
             EvidenceRating.objects.create(user=request.user, post=evidence.post, evidence=evidence,
                                               star_count=star_count, text=text)
+
+            notification_content = f"「{request.user.username}」さんに提出した証拠の「{evidence.text}」を評価されました"
+            Notification.objects.create(user=evidence.user, post=evidence.post, content=notification_content)
             return redirect('evidence_detail', evidence_id=evidence.id)
         else:
             form = EvidenceRatingForm()
@@ -339,4 +350,22 @@ def get_star_status(request):
     for evidence in evidence_ratings:
         response_data[evidence.id] = evidence.star_count
 
+    return JsonResponse(response_data)
+
+def notification(request):
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-timestamp')
+    Notification.objects.filter(user=user, read=False).update(read=True)
+
+    paginator = Paginator(notifications, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'notification.html', {'page_obj':page_obj})
+
+def check_new_notifications(request):
+    user = request.user
+    has_new_notifications = Notification.objects.filter(user=user, read=False).exists()
+
+    response_data = {'hasNewNotification': has_new_notifications}
     return JsonResponse(response_data)
