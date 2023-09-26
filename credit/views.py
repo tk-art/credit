@@ -238,7 +238,7 @@ def like_post(request, post_id):
         post.like_count += 1
         is_liked = True
         if request.user != post.user:
-            notification_content = f"{request.user.username}さんが宣言「{post.content}」にいいねしました"
+            notification_content = f"「{request.user.username}」さんが宣言「{post.content}」にいいねしました"
             Notification.objects.create(user=post.user, post=post, content=notification_content)
 
 
@@ -264,7 +264,7 @@ def follow(request, user_id):
         else:
             request.user.profile.follows.add(user_to_toggle.profile)
             is_following = True
-            notification_content = f"{request.user.username}さんにフォローされました"
+            notification_content = f"「{request.user.username}」さんにフォローされました"
             Notification.objects.create(user=user_to_toggle, content=notification_content)
 
         response_data = {

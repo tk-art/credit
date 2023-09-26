@@ -4,14 +4,31 @@
 <div class="container col-md-6">
   <h3 class="notification-midasi">通知</h3>
   <div class="separator"></div>
-  {% for notification in page_obj %}
-    <div class="notification">
-      <p class="notification-content">
-        {{ notification.content }}<br>
-        {{ notification.timestamp|date:"Y/n/j a G:i" }}
-      </p>
-      <div class="separator"></div>
-    </div>
-  {% endfor %}
+    {% for notification in page_obj %}
+      <div class="notification">
+        <p class="notification-content">
+          {{ notification.content }}<br>
+          {{ notification.timestamp|date:"Y/n/j a G:i" }}
+        </p>
+        <div class="separator"></div>
+      </div>
+    {% endfor %}
+
+    <nav class="paginate" aria-label="Page navigation">
+      <ul class="pagination">
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li class="page-item active" aria-current="page">
+              <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
 </div>
 {% endblock %}

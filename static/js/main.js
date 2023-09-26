@@ -200,7 +200,6 @@ $(document).ready(function() {
       url: '/api/notifications/check',
       method: 'GET',
       success: function(response) {
-        console.log(response);
         if (response.hasNewNotification) {
           showNewNotification();
         }
@@ -218,6 +217,6 @@ $(document).ready(function() {
   });
 
   function showNewNotification() {
-    $('#notification-icon').html('⭕️');
+    $('#notification-icon').html('🔴');
   }
 });

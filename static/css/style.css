@@ -580,3 +580,14 @@ label {
 .notification-content {
   margin-left: 20px;
 }
+
+/* ページネーション */
+.pagination {
+  justify-content: center;
+}
+.page-item {
+  margin: 0 5px;
+}
+.page-link {
+  border-radius: 100px !important;
+}
