@@ -1,7 +1,7 @@
 
 from django.urls import reverse
 from django.test import TestCase
-from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating
+from .models import CustomUser, Profile, Post, Like, Evidence, EvidenceImage, EvidenceRating, Notification
 from .forms import SignupForm, ProfileForm, EvidenceForm, EvidenceImageForm
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -266,3 +266,29 @@ class RatingTest(TestCase):
     def test_template_rendering(self):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'evidence_detail.html')
+
+class NotificationModelTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+
+    def test_notification_creation(self):
+        notification = Notification.objects.create(user=self.user, content='Test Content')
+        self.assertIsInstance(notification, Notification)
+
+class NotificationViewTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+        self.notifications = [Notification.objects.create(user=self.user, content=f'Test Content {i}') for i in range(20)]
+        Profile.objects.create(user=self.user, username='username', content='content')
+
+    def test_pagination(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.get(reverse('notification'))
+        self.assertEqual(len(response.context['page_obj']), 10)
+
+    def test_unread_notification_mark(self):
+        self.client.login(username='testuser', password='testpass')
+        Notification.objects.create(user=self.user, content='Test Content')
+        response = self.client.get(reverse('top'))
+        content = response.content.decode()
+        self.assertIn('<span id="notification-icon">🔴</span>', content)
