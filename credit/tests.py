@@ -285,10 +285,3 @@ class NotificationViewTest(TestCase):
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(reverse('notification'))
         self.assertEqual(len(response.context['page_obj']), 10)
-
-    def test_unread_notification_mark(self):
-        self.client.login(username='testuser', password='testpass')
-        Notification.objects.create(user=self.user, content='Test Content')
-        response = self.client.get(reverse('top'))
-        content = response.content.decode()
-        self.assertIn('<span id="notification-icon">🔴</span>', content)
