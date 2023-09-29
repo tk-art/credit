@@ -23,6 +23,8 @@ urlpatterns = [
     path('get_star_status/', views.get_star_status, name='get_star_status'),
     path('notification/', views.notification, name='notification'),
     path('api/notifications/check/', views.check_new_notifications, name='check_new_notifications'),
+    path('search/', views.search, name='search'),
+    path('search_results/', views.search_results, name='search_results'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

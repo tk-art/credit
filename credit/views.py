@@ -369,3 +369,19 @@ def check_new_notifications(request):
 
     response_data = {'hasNewNotification': has_new_notifications}
     return JsonResponse(response_data)
+
+def search(request):
+    return render(request, 'search.html')
+
+def search_results(request):
+    query = request.GET.get('search', '')
+
+    matching_posts = Post.objects.filter(text__icontains=query)
+
+    matching_evidences = Evidence.objects.filter(text__icontains=query)
+
+    context = {
+        'matching_posts': matching_posts,
+        'matching_evidences': matching_evidences
+    }
+    return render(request, 'search.html', context)

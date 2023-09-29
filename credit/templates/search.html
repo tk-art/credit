@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}検索{% endblock %}
+{% block content %}
+<div class="container col-md-6">
+  <form action="/search_results/" method="get">
+    {% csrf_token %}
+    <div class="form-group">
+      <input type="text" class="form-control" id="search" name="search" placeholder="検索したいキーワードを入力..." required>
+    </div>
+  </form>
+
+  <div class="search-results">
+    <ul class="nav nav-tabs" id="myTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">宣言</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">証拠</a>
+      </li>
+    </ul>
+
+    <div class="profile-sepa"></div>
+
+    <!--宣言-->
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <div class="post">
+          {% for post in matching_posts %}
+            <div class="post-info">
+              <a href="/profile/{{ post.user.id }}">
+                <img src="{{ post.user.profile.image.url }}" alt="{{ post.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ post.user.profile.username }}</p>
+              <p class="post-timestamp">{{ post.delta }}</p>
+            </div>
+            {% if post.evidence %}
+              <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-evidence-{{ post.id }}">関連する証拠</a>
+            {% endif %}
+            <div class="post-data">
+              <div class="post-period">期日：{{ post.formatted_deadline }}</div>
+              <div class="post-content">宣言：{{ post.content }}</div>
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.user.profile.username }}" class="post-image">
+              {% endif %}
+
+              <button class="like-button" data-post-id="{{ post.id }}" onclick="likeButtonClicked(this)">
+                <i class="fa-solid fa-heart heart" id="heart-icon-{{ post.id }}"></i>
+                <span class="like-count" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+              </button>
+
+            </div>
+            <div class="separator"></div>
+
+            <!--投稿に関連した証拠モーダル-->
+            <div class="modal fade" id="connection-evidence-{{ post.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">関連する証拠</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="post">
+                      <div class="post-info">
+                        <a href="/profile/{{ post.evidence.user.id }}">
+                          <img src="{{ post.evidence.user.profile.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="post-user-image">
+                        </a>
+                        <p class="post-username">{{ post.evidence.user.profile.username }}</p>
+                        <p class="post-timestamp">{{ post.evidence.delta }}</p>
+                      </div>
+                      <div class="post-data">
+                        <div class="evidence-text">{{ post.evidence.text }}</div>
+                        {% for evidence_image in post.evidence.images.all %}
+                          <img src="{{ evidence_image.image.url }}" alt="{{ post.evidence.user.profile.username }}" class="evidence-modal-image">
+                        {% endfor %}
+                      </div>
+                      <a href="/evidence_detail/{{ post.evidence.id }}" class="evidence-detail-btn">詳細ページ</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!--証拠-->
+      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <div class="post">
+          {% for evidence in matching_evidences %}
+            <div class="post-info">
+              <a href="/profile/{{ evidence.user.id }}">
+                <img src="{{ evidence.user.profile.image.url }}" alt="{{ evidence.user.profile.username }}" class="post-user-image">
+              </a>
+              <p class="post-username">{{ evidence.user.profile.username }}</p>
+              <p class="post-timestamp">{{ evidence.delta }}</p>
+            </div>
+            <a class="connection-btn" data-bs-toggle="modal" data-bs-target="#connection-declaration">関連する宣言</a>
+            <div class="post-data">
+              <div class="evidence-text">{{ evidence.text }}</div>
+              {% for evidence_image in evidence.images.all %}
+                <img src="{{ evidence_image.image.url }}" alt="{{ evidence.user.profile.username }}" class="evidence-image">
+              {% endfor %}
+            </div>
+            <a href="/evidence_detail/{{ evidence.id }}" class="connection-btn">詳細ページ</a>
+            {% if request.user == profile.user %}
+              <form action="/delete_evidence/{{ evidence.post.id }}/" method="post" class="delete-form">
+                {% csrf_token %}
+                <button class="delete-btn">削除</button>
+              </form>
+            {% endif %}
+            <div class="separator"></div>
+
+            <!--証拠に関連する宣言モーダル-->
+            <div class="modal fade" id="connection-declaration" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">関連する宣言</h5>
+                  </div>
+                  <div class="modal-body">
+                    <div class="post">
+                      <div class="post-info">
+                        <a href="/profile/{{ evidence.post.user.id }}">
+                          <img src="{{ evidence.post.user.profile.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-user-image">
+                        </a>
+                        <p class="post-username">{{ evidence.post.user.profile.username }}</p>
+                        <p class="post-timestamp">{{ evidence.post.delta }}</p>
+                      </div>
+                      <div class="post-data">
+                        <div class="post-period">期日：{{ evidence.post.period }}</div>
+                        <div class="post-content">宣言：{{ evidence.post.content }}</div>
+                        {% if evidence.post.image %}
+                          <img src="{{ evidence.post.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-image">
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    <!--画像用モーダル-->
+    <div id="modal" class="modal">
+      <img id="modal-image" src="" alt="Full Image" class="modal-image">
+      <span id="close-modal" class="close-modal">Close</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
