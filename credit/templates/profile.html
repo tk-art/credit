@@ -189,7 +189,7 @@
                         <p class="post-timestamp">{{ evidence.post.delta }}</p>
                       </div>
                       <div class="post-data">
-                        <div class="post-period">期日：{{ evidence.post.period }}</div>
+                        <div class="post-period">期日：{{ evidence.post.formatted_deadline }}</div>
                         <div class="post-content">宣言：{{ evidence.post.content }}</div>
                         {% if evidence.post.image %}
                           <img src="{{ evidence.post.image.url }}" alt="{{ evidence.post.user.profile.username }}" class="post-image">

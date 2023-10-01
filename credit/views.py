@@ -143,6 +143,7 @@ def profile(request, user_id):
       evidence.delta = human_readable_time_from_utc(evidence.timestamp)
       evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
       evidence_rate = EvidenceRating.objects.filter(evidence_id=evidence.id)
+      evidence.post.formatted_deadline = evidence.post.deadline.strftime('%Y-%m-%d %H:%Mまで')
 
 
     for post in posts:
@@ -375,10 +376,19 @@ def search(request):
 
 def search_results(request):
     query = request.GET.get('search', '')
+    print(query)
 
-    matching_posts = Post.objects.filter(text__icontains=query)
+    matching_posts = Post.objects.filter(content__icontains=query)
+    for post in matching_posts:
+        post.delta = human_readable_time_from_utc(post.timestamp)
+        post.evidence.delta = human_readable_time_from_utc(post.evidence.timestamp)
+        post.formatted_deadline = post.deadline.strftime('%Y-%m-%d %H:%Mまで')
 
     matching_evidences = Evidence.objects.filter(text__icontains=query)
+    for evidence in matching_evidences:
+        evidence.delta = human_readable_time_from_utc(evidence.timestamp)
+        evidence.post.delta = human_readable_time_from_utc(evidence.post.timestamp)
+        evidence.post.formatted_deadline = evidence.post.deadline.strftime('%Y-%m-%d %H:%Mまで')
 
     context = {
         'matching_posts': matching_posts,
