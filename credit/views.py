@@ -376,7 +376,6 @@ def search(request):
 
 def search_results(request):
     query = request.GET.get('search', '')
-    print(query)
 
     matching_posts = Post.objects.filter(content__icontains=query)
     for post in matching_posts:

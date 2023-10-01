@@ -285,3 +285,23 @@ class NotificationViewTest(TestCase):
         self.client.login(username='testuser', password='testpass')
         response = self.client.get(reverse('notification'))
         self.assertEqual(len(response.context['page_obj']), 10)
+
+class SearchTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(user=self.user, content="This is a test content for positive test.")
+        self.evidence = Evidence.objects.create(user=self.user, post=self.post, text="Another test content without keyword.")
+
+    def test_positive_case(self):
+        search_post_result = Post.objects.filter(content__icontains="test")
+        search_evidence_result = Evidence.objects.filter(text__icontains="test")
+
+        self.assertEqual(search_post_result.count(), 1)
+        self.assertEqual(search_evidence_result.count(), 1)
+
+    def test_negative_case(self):
+        search_post_result = Post.objects.filter(content__icontains="nonexistent keyword")
+        search_evidence_result = Evidence.objects.filter(text__icontains="nonexistent keyword")
+
+        self.assertEqual(search_post_result.count(), 0)
+        self.assertEqual(search_evidence_result.count(), 0)
